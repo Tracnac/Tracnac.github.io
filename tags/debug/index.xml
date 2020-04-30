@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>debug on Devmobs.fr</title>
+    <link>https://www.devmobs.fr/tags/debug/</link>
+    <description>Recent content in debug on Devmobs.fr</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 16 Mar 2020 20:31:04 +0100</lastBuildDate>
+    
+	<atom:link href="https://www.devmobs.fr/tags/debug/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Nim Taille Binaire</title>
+      <link>https://www.devmobs.fr/posts/nim-taille-binaire/</link>
+      <pubDate>Mon, 16 Mar 2020 20:31:04 +0100</pubDate>
+      
+      <guid>https://www.devmobs.fr/posts/nim-taille-binaire/</guid>
+      <description>Introduction La curiosité m&amp;rsquo;a piqué après la lecture de ce post : Hello world
+Du coup j&amp;rsquo;apporte ma contribution avec le language Nim
+Tous les tests sont effectués sous :
+ VoidLinux VoidLinux  MUSL 1.1.24 GLIBC 2.30   GCC 9.2.0 GNU GCC Nim 1.0.4 Nim UPX 3.95 UPX  Le code source sous Nim est des plus simple :
+-bash-5.0# cat hello.nim echo(&amp;#34;Hello world&amp;#34;) -bash-5.0#    Test case Execution time Total syscalls Unique syscalls Size (KiB)     Nim (musl, static) 0.</description>
+    </item>
+    
+  </channel>
+</rss>
