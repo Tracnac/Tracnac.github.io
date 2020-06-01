@@ -2,57 +2,57 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Devmobs.fr</title>
-    <link>https://www.devmobs.fr/tags/</link>
+    <link>https://tracnac.github.io/tags/</link>
     <description>Recent content in Tags on Devmobs.fr</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 16 Mar 2020 20:31:04 +0100</lastBuildDate>
     
-	<atom:link href="https://www.devmobs.fr/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://tracnac.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>debug</title>
-      <link>https://www.devmobs.fr/tags/debug/</link>
+      <link>https://tracnac.github.io/tags/debug/</link>
       <pubDate>Mon, 16 Mar 2020 20:31:04 +0100</pubDate>
       
-      <guid>https://www.devmobs.fr/tags/debug/</guid>
+      <guid>https://tracnac.github.io/tags/debug/</guid>
       <description></description>
     </item>
     
     <item>
       <title>memory</title>
-      <link>https://www.devmobs.fr/tags/memory/</link>
+      <link>https://tracnac.github.io/tags/memory/</link>
       <pubDate>Mon, 16 Mar 2020 20:31:04 +0100</pubDate>
       
-      <guid>https://www.devmobs.fr/tags/memory/</guid>
+      <guid>https://tracnac.github.io/tags/memory/</guid>
       <description></description>
     </item>
     
     <item>
       <title>nim</title>
-      <link>https://www.devmobs.fr/tags/nim/</link>
+      <link>https://tracnac.github.io/tags/nim/</link>
       <pubDate>Mon, 16 Mar 2020 20:31:04 +0100</pubDate>
       
-      <guid>https://www.devmobs.fr/tags/nim/</guid>
+      <guid>https://tracnac.github.io/tags/nim/</guid>
       <description></description>
     </item>
     
     <item>
       <title>git</title>
-      <link>https://www.devmobs.fr/tags/git/</link>
+      <link>https://tracnac.github.io/tags/git/</link>
       <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://www.devmobs.fr/tags/git/</guid>
+      <guid>https://tracnac.github.io/tags/git/</guid>
       <description></description>
     </item>
     
     <item>
       <title>hugo</title>
-      <link>https://www.devmobs.fr/tags/hugo/</link>
+      <link>https://tracnac.github.io/tags/hugo/</link>
       <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://www.devmobs.fr/tags/hugo/</guid>
+      <guid>https://tracnac.github.io/tags/hugo/</guid>
       <description></description>
     </item>
     

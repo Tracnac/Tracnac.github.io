@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>git on Devmobs.fr</title>
-    <link>https://www.devmobs.fr/tags/git/</link>
+    <link>https://tracnac.github.io/tags/git/</link>
     <description>Recent content in git on Devmobs.fr</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 21 Nov 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://www.devmobs.fr/tags/git/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://tracnac.github.io/tags/git/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Getting Started with Hugo</title>
-      <link>https://www.devmobs.fr/posts/hugoisforlovers/</link>
+      <link>https://tracnac.github.io/posts/hugoisforlovers/</link>
       <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://www.devmobs.fr/posts/hugoisforlovers/</guid>
+      <guid>https://tracnac.github.io/posts/hugoisforlovers/</guid>
       <description>Step 1. Install Hugo Go to Hugo releases and download the appropriate version for your OS and architecture.
 Save it somewhere specific as we will be using it in the next step.
 More complete instructions are available at Install Hugo
