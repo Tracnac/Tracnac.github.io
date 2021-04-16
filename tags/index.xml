@@ -6,10 +6,28 @@
     <description>Recent content in Tags on Devmobs.fr</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 16 Mar 2020 20:31:04 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 16 Apr 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://tracnac.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ci/cd</title>
+      <link>https://tracnac.github.io/tags/ci/cd/</link>
+      <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://tracnac.github.io/tags/ci/cd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>github</title>
+      <link>https://tracnac.github.io/tags/github/</link>
+      <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://tracnac.github.io/tags/github/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>debug</title>
