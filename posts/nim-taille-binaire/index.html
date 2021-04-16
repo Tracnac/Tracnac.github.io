@@ -4,7 +4,7 @@
   <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="generator" content="Hugo 0.64.0" />
+  <meta name="generator" content="Hugo 0.82.0" />
   <link rel="stylesheet" href="https://tracnac.github.io/css/bootstrap.min.css">
   
   
@@ -276,7 +276,7 @@ Hint: operation successful <span style="color:#f92672">(</span><span style="colo
 Hello world
 -bash-5.0#
 </code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# file hello
-hello: ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]</span><span style="color:#f92672">=</span>54b23b1f1bb2ca9598c64a9a844de962ba22622b, stripped
+hello: ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>54b23b1f1bb2ca9598c64a9a844de962ba22622b, stripped
 -bash-5.0# ldd hello
 ldd: hello: Not a valid dynamic program
 -bash-5.0#
@@ -319,7 +319,7 @@ Hint: operation successful <span style="color:#f92672">(</span><span style="colo
 Hello world
 -bash-5.0#
 </code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# file hello
-hello: ELF 64-bit LSB pie executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]</span><span style="color:#f92672">=</span>355f1d6a54526a182a0cd5cd7ebdd78399735eff, stripped
+hello: ELF 64-bit LSB pie executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>355f1d6a54526a182a0cd5cd7ebdd78399735eff, stripped
 -bash-5.0# ldd ./hello
         /lib/ld-musl-x86_64.so.1 <span style="color:#f92672">(</span>0x7fe39a4f6000<span style="color:#f92672">)</span>
         libc.so <span style="color:#f92672">=</span>&gt; /lib/ld-musl-x86_64.so.1 <span style="color:#f92672">(</span>0x7fe39a4f6000<span style="color:#f92672">)</span>
@@ -360,7 +360,7 @@ Hint: operation successful <span style="color:#f92672">(</span><span style="colo
 Hello world
 -bash-5.0#
 </code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# file hello
-hello: ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>GNU/Linux<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]</span><span style="color:#f92672">=</span>0c9833550755f7aaa7b3017ea3e9d90ca8d92f02, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
+hello: ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>GNU/Linux<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>0c9833550755f7aaa7b3017ea3e9d90ca8d92f02, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
 -bash-5.0# ldd hello
         not a dynamic executable
 -bash-5.0#
@@ -404,7 +404,7 @@ Hint: operation successful <span style="color:#f92672">(</span><span style="colo
 -rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">30952</span> Jan  <span style="color:#ae81ff">5</span> 11:42 hello
 -bash-5.0#
 </code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# file hello
-hello: ELF 64-bit LSB pie executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, dynamically linked, interpreter /lib/ld-linux-x86-64.so.2, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]</span><span style="color:#f92672">=</span>bc75b867f4aaa8c9af58ee29430b098b03de475f, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
+hello: ELF 64-bit LSB pie executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, dynamically linked, interpreter /lib/ld-linux-x86-64.so.2, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>bc75b867f4aaa8c9af58ee29430b098b03de475f, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
 -bash-5.0#
 -bash-5.0# ldd hello
         linux-vdso.so.1 <span style="color:#f92672">(</span>0x00007fffea4eb000<span style="color:#f92672">)</span>
