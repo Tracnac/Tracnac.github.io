@@ -52,5 +52,32 @@
       <description></description>
     </item>
     
+    <item>
+      <title>jekyll</title>
+      <link>https://tracnac.github.io/tags/jekyll/</link>
+      <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://tracnac.github.io/tags/jekyll/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>migration</title>
+      <link>https://tracnac.github.io/tags/migration/</link>
+      <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://tracnac.github.io/tags/migration/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>templates</title>
+      <link>https://tracnac.github.io/tags/templates/</link>
+      <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://tracnac.github.io/tags/templates/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>
