@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Devmobs.fr</title>
+    <link>https://tracnac.github.io/posts/</link>
+    <description>Recent content in Posts on Devmobs.fr</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 01 Feb 2024 13:23:00 +0100</lastBuildDate><atom:link href="https://tracnac.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Test CI/CD</title>
+      <link>https://tracnac.github.io/posts/test/</link>
+      <pubDate>Thu, 01 Feb 2024 13:23:00 +0100</pubDate>
+      
+      <guid>https://tracnac.github.io/posts/test/</guid>
+      <description>The quick brown fox jumps over the lazy dog. Portez ce vieux whisky au juge blond qui fume.</description>
+    </item>
+    
+    <item>
+      <title>Nim Taille Binaire</title>
+      <link>https://tracnac.github.io/posts/nim-taille-binaire/</link>
+      <pubDate>Mon, 16 Mar 2020 20:31:04 +0100</pubDate>
+      
+      <guid>https://tracnac.github.io/posts/nim-taille-binaire/</guid>
+      <description>Introduction La curiosité m&amp;rsquo;a piqué après la lecture de ce post : Hello world
+Du coup j&amp;rsquo;apporte ma contribution avec le language Nim
+Tous les tests sont effectués sous :
+ VoidLinux VoidLinux  MUSL 1.1.24 GLIBC 2.30   GCC 9.2.0 GNU GCC Nim 1.0.4 Nim UPX 3.95 UPX  Le code source sous Nim est des plus simple :
+-bash-5.0# cat hello.nim echo(&amp;#34;Hello world&amp;#34;) -bash-5.0#    Test case Execution time Total syscalls Unique syscalls Size (KiB)     Nim (musl, static) 0.</description>
+    </item>
+    
+    <item>
+      <title>Getting Started with Hugo</title>
+      <link>https://tracnac.github.io/posts/hugoisforlovers/</link>
+      <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://tracnac.github.io/posts/hugoisforlovers/</guid>
+      <description>Step 1. Install Hugo Go to Hugo releases and download the appropriate version for your OS and architecture.
+Save it somewhere specific as we will be using it in the next step.
+More complete instructions are available at Install Hugo
+Step 2. Build the Docs Hugo has its own example site which happens to also be the documentation site you are reading right now.
+Follow the following steps:
+ Clone the Hugo repository Go into the repo Run hugo in server mode and build the docs Open your browser to http://localhost:1313  Corresponding pseudo commands:</description>
+    </item>
+    
+    <item>
+      <title>Migrate to Hugo from Jekyll</title>
+      <link>https://tracnac.github.io/posts/migrate-from-jekyll/</link>
+      <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://tracnac.github.io/posts/migrate-from-jekyll/</guid>
+      <description>Move static content to static Jekyll has a rule that any directory not starting with _ will be copied as-is to the _site output. Hugo keeps all static content under static. You should therefore move it all there. With Jekyll, something that looked like
+▾ &amp;lt;root&amp;gt;/ ▾ images/ logo.png  should become
+▾ &amp;lt;root&amp;gt;/ ▾ static/ ▾ images/ logo.png  Additionally, you&amp;rsquo;ll want any files that should reside at the root (such as CNAME) to be moved to static.</description>
+    </item>
+    
+  </channel>
+</rss>
