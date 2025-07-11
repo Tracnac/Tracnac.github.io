@@ -6,13 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="generator" content="Hugo 0.148.0">
   
-  <meta name="description" content="Move static content to static Jekyll has a rule that any directory not starting with _ will be copied as-is to the _site output. Hugo keeps all static content under static. You should therefore move it all there. With Jekyll, something that looked like
-▾ &lt;root&gt;/ ▾ images/ logo.png should become
-▾ &lt;root&gt;/ ▾ static/ ▾ images/ logo.png Additionally, you’ll want any files that should reside at the root (such as CNAME) to be moved to static.">
+  <meta name="description" content="Déplacer le contenu statique dans static Jekyll a une règle : tout dossier ne commençant pas par _ sera copié tel quel dans le dossier de sortie _site. Hugo place tout le contenu statique dans static. Il faut donc tout déplacer là. Avec Jekyll, cela ressemblait à :
+▾ &lt;racine&gt;/ ▾ images/ logo.png Cela doit devenir :
+▾ &lt;racine&gt;/ ▾ static/ ▾ images/ logo.png De plus, tous les fichiers devant être à la racine (comme CNAME) doivent être déplacés dans static.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   
   
-  <title>Migrate to Hugo from Jekyll | Devmobs.fr</title>
+  <title>Migration de Jekyll vers Hugo | Devmobs.fr</title>
   <style>
 .container {
   max-width: 800px;
@@ -162,34 +162,34 @@ audio {
         
 
 
-<h2 id="move-static-content-to-static">Move static content to <code>static</code></h2>
-<p>Jekyll has a rule that any directory not starting with <code>_</code> will be copied as-is to the <code>_site</code> output. Hugo keeps all static content under <code>static</code>. You should therefore move it all there.
-With Jekyll, something that looked like</p>
-<pre><code>▾ &lt;root&gt;/
+<h2 id="déplacer-le-contenu-statique-dans-static">Déplacer le contenu statique dans <code>static</code></h2>
+<p>Jekyll a une règle : tout dossier ne commençant pas par <code>_</code> sera copié tel quel dans le dossier de sortie <code>_site</code>. Hugo place tout le contenu statique dans <code>static</code>. Il faut donc tout déplacer là.
+Avec Jekyll, cela ressemblait à :</p>
+<pre><code>▾ &lt;racine&gt;/
     ▾ images/
         logo.png
 </code></pre>
-<p>should become</p>
-<pre><code>▾ &lt;root&gt;/
+<p>Cela doit devenir :</p>
+<pre><code>▾ &lt;racine&gt;/
     ▾ static/
         ▾ images/
             logo.png
 </code></pre>
-<p>Additionally, you&rsquo;ll want any files that should reside at the root (such as <code>CNAME</code>) to be moved to <code>static</code>.</p>
-<h2 id="create-your-hugo-configuration-file">Create your Hugo configuration file</h2>
-<p>Hugo can read your configuration as JSON, YAML or TOML. Hugo supports parameters custom configuration too. Refer to the <a href="/overview/configuration/">Hugo configuration documentation</a> for details.</p>
-<h2 id="set-your-configuration-publish-folder-to-_site">Set your configuration publish folder to <code>_site</code></h2>
-<p>The default is for Jekyll to publish to <code>_site</code> and for Hugo to publish to <code>public</code>. If, like me, you have <a href="http://blog.blindgaenger.net/generate_github_pages_in_a_submodule.html"><code>_site</code> mapped to a git submodule on the <code>gh-pages</code> branch</a>, you&rsquo;ll want to do one of two alternatives:</p>
+<p>De plus, tous les fichiers devant être à la racine (comme <code>CNAME</code>) doivent être déplacés dans <code>static</code>.</p>
+<h2 id="créer-le-fichier-de-configuration-hugo">Créer le fichier de configuration Hugo</h2>
+<p>Hugo peut lire la configuration en JSON, YAML ou TOML. Hugo supporte aussi des paramètres personnalisés. Consulte la <a href="/overview/configuration/">documentation de configuration Hugo</a> pour plus de détails.</p>
+<h2 id="définir-le-dossier-de-publication-sur-_site">Définir le dossier de publication sur <code>_site</code></h2>
+<p>Par défaut, Jekyll publie dans <code>_site</code> et Hugo dans <code>public</code>. Si, comme moi, tu as <a href="http://blog.blindgaenger.net/generate_github_pages_in_a_submodule.html"><code>_site</code> mappé sur un sous-module git branché sur <code>gh-pages</code></a>, tu as deux options :</p>
 <ol>
 <li>
-<p>Change your submodule to point to map <code>gh-pages</code> to public instead of <code>_site</code> (recommended).</p>
+<p>Modifier ton sous-module pour pointer <code>gh-pages</code> vers <code>public</code> au lieu de <code>_site</code> (recommandé).</p>
 <pre><code> git submodule deinit _site
  git rm _site
- git submodule add -b gh-pages git@github.com:your-username/your-repo.git public
+ git submodule add -b gh-pages git@github.com:ton-utilisateur/ton-repo.git public
 </code></pre>
 </li>
 <li>
-<p>Or, change the Hugo configuration to use <code>_site</code> instead of <code>public</code>.</p>
+<p>Ou, modifier la configuration Hugo pour utiliser <code>_site</code> au lieu de <code>public</code>.</p>
 <pre><code> {
      ..
      &quot;publishdir&quot;: &quot;_site&quot;,
@@ -198,14 +198,14 @@ With Jekyll, something that looked like</p>
 </code></pre>
 </li>
 </ol>
-<h2 id="convert-jekyll-templates-to-hugo-templates">Convert Jekyll templates to Hugo templates</h2>
-<p>That&rsquo;s the bulk of the work right here. The documentation is your friend. You should refer to <a href="http://jekyllrb.com/docs/templates/">Jekyll&rsquo;s template documentation</a> if you need to refresh your memory on how you built your blog and <a href="/layout/templates/">Hugo&rsquo;s template</a> to learn Hugo&rsquo;s way.</p>
-<p>As a single reference data point, converting my templates for <a href="http://heyitsalex.net/">heyitsalex.net</a> took me no more than a few hours.</p>
-<h2 id="convert-jekyll-plugins-to-hugo-shortcodes">Convert Jekyll plugins to Hugo shortcodes</h2>
-<p>Jekyll has <a href="http://jekyllrb.com/docs/plugins/">plugins</a>; Hugo has <a href="/doc/shortcodes/">shortcodes</a>. It&rsquo;s fairly trivial to do a port.</p>
-<h3 id="implementation">Implementation</h3>
-<p>As an example, I was using a custom <a href="https://github.com/alexandre-normand/alexandre-normand/blob/74bb12036a71334fdb7dba84e073382fc06908ec/_plugins/image_tag.rb"><code>image_tag</code></a> plugin to generate figures with caption when running Jekyll. As I read about shortcodes, I found Hugo had a nice built-in shortcode that does exactly the same thing.</p>
-<p>Jekyll&rsquo;s plugin:</p>
+<h2 id="convertir-les-templates-jekyll-en-templates-hugo">Convertir les templates Jekyll en templates Hugo</h2>
+<p>C&rsquo;est la plus grosse partie du travail. La documentation est ton amie. Consulte la <a href="http://jekyllrb.com/docs/templates/">documentation des templates Jekyll</a> pour te rafraîchir la mémoire sur la construction de ton blog et la <a href="/layout/templates/">documentation des templates Hugo</a> pour apprendre la méthode Hugo.</p>
+<p>À titre d&rsquo;exemple, convertir mes templates pour <a href="http://heyitsalex.net/">heyitsalex.net</a> m&rsquo;a pris seulement quelques heures.</p>
+<h2 id="convertir-les-plugins-jekyll-en-shortcodes-hugo">Convertir les plugins Jekyll en shortcodes Hugo</h2>
+<p>Jekyll a des <a href="http://jekyllrb.com/docs/plugins/">plugins</a> ; Hugo a des <a href="/doc/shortcodes/">shortcodes</a>. Le portage est assez simple.</p>
+<h3 id="exemple-dimplémentation">Exemple d&rsquo;implémentation</h3>
+<p>Par exemple, j&rsquo;utilisais un plugin Jekyll <a href="https://github.com/alexandre-normand/alexandre-normand/blob/74bb12036a71334fdb7dba84e073382fc06908ec/_plugins/image_tag.rb"><code>image_tag</code></a> personnalisé pour générer des figures avec légende sous Jekyll. En lisant sur les shortcodes, j&rsquo;ai découvert que Hugo propose un shortcode intégré qui fait exactement la même chose.</p>
+<p>Plugin Jekyll :</p>
 <pre><code>module Jekyll
   class ImageTag &lt; Liquid::Tag
     @url = nil
@@ -260,7 +260,7 @@ With Jekyll, something that looked like</p>
 end
 Liquid::Template.register_tag('image', Jekyll::ImageTag)
 </code></pre>
-<p>is written as this Hugo shortcode:</p>
+<p>devient ce shortcode Hugo :</p>
 <pre><code>&lt;!-- image --&gt;
 &lt;figure {{ with .Get &quot;class&quot; }}class=&quot;{{.}}&quot;{{ end }}&gt;
     {{ with .Get &quot;link&quot;}}&lt;a href=&quot;{{.}}&quot;&gt;{{ end }}
@@ -280,21 +280,21 @@ Liquid::Template.register_tag('image', Jekyll::ImageTag)
 &lt;/figure&gt;
 &lt;!-- image --&gt;
 </code></pre>
-<h3 id="usage">Usage</h3>
-<p>I simply changed:</p>
-<pre><code>{% image full http://farm5.staticflickr.com/4136/4829260124_57712e570a_o_d.jpg &quot;One of my favorite touristy-type photos. I secretly waited for the good light while we were &quot;having fun&quot; and took this. Only regret: a stupid pole in the top-left corner of the frame I had to clumsily get rid of at post-processing.&quot; -&gt;http://www.flickr.com/photos/alexnormand/4829260124/in/set-72157624547713078/ %}
+<h3 id="utilisation">Utilisation</h3>
+<p>J&rsquo;ai simplement changé :</p>
+<pre><code>{% image full http://farm5.staticflickr.com/4136/4829260124_57712e570a_o_d.jpg &quot;Une de mes photos touristiques préférées. J'ai attendu la bonne lumière en douce pendant qu'on \&quot;s'amusait\&quot; et j'ai pris la photo. Seul regret : un poteau en haut à gauche que j'ai dû effacer en post-traitement.&quot; -&gt;http://www.flickr.com/photos/alexnormand/4829260124/in/set-72157624547713078/ %}
 </code></pre>
-<p>to this (this example uses a slightly extended version named <code>fig</code>, different than the built-in <code>figure</code>):</p>
-<pre><code>{{% fig class=&quot;full&quot; src=&quot;http://farm5.staticflickr.com/4136/4829260124_57712e570a_o_d.jpg&quot; title=&quot;One of my favorite touristy-type photos. I secretly waited for the good light while we were having fun and took this. Only regret: a stupid pole in the top-left corner of the frame I had to clumsily get rid of at post-processing.&quot; link=&quot;http://www.flickr.com/photos/alexnormand/4829260124/in/set-72157624547713078/&quot; %}}
+<p>par ceci (cet exemple utilise une version légèrement étendue nommée <code>fig</code>, différente du <code>figure</code> intégré) :</p>
+<pre><code>{{% fig class=&quot;full&quot; src=&quot;http://farm5.staticflickr.com/4136/4829260124_57712e570a_o_d.jpg&quot; title=&quot;Une de mes photos touristiques préférées. J'ai attendu la bonne lumière en douce pendant qu'on s'amusait et j'ai pris la photo. Seul regret : un poteau en haut à gauche que j'ai dû effacer en post-traitement.&quot; link=&quot;http://www.flickr.com/photos/alexnormand/4829260124/in/set-72157624547713078/&quot; %}}
 </code></pre>
-<p>As a bonus, the shortcode named parameters are, arguably, more readable.</p>
-<h2 id="finishing-touches">Finishing touches</h2>
-<h3 id="fix-content">Fix content</h3>
-<p>Depending on the amount of customization that was done with each post with Jekyll, this step will require more or less effort. There are no hard and fast rules here except that <code>hugo server --watch</code> is your friend. Test your changes and fix errors as needed.</p>
-<h3 id="clean-up">Clean up</h3>
-<p>You&rsquo;ll want to remove the Jekyll configuration at this point. If you have anything else that isn&rsquo;t used, delete it.</p>
-<h2 id="a-practical-example-in-a-diff">A practical example in a diff</h2>
-<p><a href="http://heyitsalex.net/">Hey, it&rsquo;s Alex</a> was migrated in less than a <em>father-with-kids day</em> from Jekyll to Hugo. You can see all the changes (and screw-ups) by looking at this <a href="https://github.com/alexandre-normand/alexandre-normand/compare/869d69435bd2665c3fbf5b5c78d4c22759d7613a...b7f6605b1265e83b4b81495423294208cc74d610">diff</a>.</p>
+<p>En bonus, les paramètres nommés des shortcodes sont plus lisibles.</p>
+<h2 id="finitions">Finitions</h2>
+<h3 id="corriger-le-contenu">Corriger le contenu</h3>
+<p>Selon le niveau de personnalisation de chaque post Jekyll, cette étape demandera plus ou moins d&rsquo;efforts. Il n&rsquo;y a pas de règle stricte, mais <code>hugo server --watch</code> est ton ami. Teste tes changements et corrige les erreurs au besoin.</p>
+<h3 id="nettoyer">Nettoyer</h3>
+<p>Il faut supprimer la configuration Jekyll à ce stade. Supprime tout ce qui n&rsquo;est plus utilisé.</p>
+<h2 id="exemple-pratique-en-diff">Exemple pratique en diff</h2>
+<p><a href="http://heyitsalex.net/">Hey, it&rsquo;s Alex</a> a été migré en moins d&rsquo;une <em>journée de papa avec enfants</em> de Jekyll à Hugo. Tu peux voir tous les changements (et les boulettes) dans ce <a href="https://github.com/alexandre-normand/alexandre-normand/compare/869d69435bd2665c3fbf5b5c78d4c22759d7613a...b7f6605b1265e83b4b81495423294208cc74d610">diff</a>.</p>
 
 
 
