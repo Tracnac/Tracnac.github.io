@@ -29,40 +29,5 @@
       <guid>https://tracnac.github.io/tags/nim/</guid>
       <description></description>
     </item>
-    <item>
-      <title>Git</title>
-      <link>https://tracnac.github.io/tags/git/</link>
-      <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
-      <guid>https://tracnac.github.io/tags/git/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Hugo</title>
-      <link>https://tracnac.github.io/tags/hugo/</link>
-      <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
-      <guid>https://tracnac.github.io/tags/hugo/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Jekyll</title>
-      <link>https://tracnac.github.io/tags/jekyll/</link>
-      <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
-      <guid>https://tracnac.github.io/tags/jekyll/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Migration</title>
-      <link>https://tracnac.github.io/tags/migration/</link>
-      <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
-      <guid>https://tracnac.github.io/tags/migration/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Templates</title>
-      <link>https://tracnac.github.io/tags/templates/</link>
-      <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
-      <guid>https://tracnac.github.io/tags/templates/</guid>
-      <description></description>
-    </item>
   </channel>
 </rss>
