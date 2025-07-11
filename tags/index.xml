@@ -4,80 +4,65 @@
     <title>Tags on Devmobs.fr</title>
     <link>https://tracnac.github.io/tags/</link>
     <description>Recent content in Tags on Devmobs.fr</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 16 Mar 2020 20:31:04 +0100</lastBuildDate><atom:link href="https://tracnac.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 16 Mar 2020 20:31:04 +0100</lastBuildDate>
+    <atom:link href="https://tracnac.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>debug</title>
+      <title>Debug</title>
       <link>https://tracnac.github.io/tags/debug/</link>
       <pubDate>Mon, 16 Mar 2020 20:31:04 +0100</pubDate>
-      
       <guid>https://tracnac.github.io/tags/debug/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>memory</title>
+      <title>Memory</title>
       <link>https://tracnac.github.io/tags/memory/</link>
       <pubDate>Mon, 16 Mar 2020 20:31:04 +0100</pubDate>
-      
       <guid>https://tracnac.github.io/tags/memory/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>nim</title>
+      <title>Nim</title>
       <link>https://tracnac.github.io/tags/nim/</link>
       <pubDate>Mon, 16 Mar 2020 20:31:04 +0100</pubDate>
-      
       <guid>https://tracnac.github.io/tags/nim/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>git</title>
+      <title>Git</title>
       <link>https://tracnac.github.io/tags/git/</link>
       <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
-      
       <guid>https://tracnac.github.io/tags/git/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>hugo</title>
+      <title>Hugo</title>
       <link>https://tracnac.github.io/tags/hugo/</link>
       <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
-      
       <guid>https://tracnac.github.io/tags/hugo/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>jekyll</title>
+      <title>Jekyll</title>
       <link>https://tracnac.github.io/tags/jekyll/</link>
       <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
-      
       <guid>https://tracnac.github.io/tags/jekyll/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>migration</title>
+      <title>Migration</title>
       <link>https://tracnac.github.io/tags/migration/</link>
       <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
-      
       <guid>https://tracnac.github.io/tags/migration/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>templates</title>
+      <title>Templates</title>
       <link>https://tracnac.github.io/tags/templates/</link>
       <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
-      
       <guid>https://tracnac.github.io/tags/templates/</guid>
       <description></description>
     </item>
-    
   </channel>
 </rss>

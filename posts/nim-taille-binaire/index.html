@@ -4,13 +4,13 @@
   <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="generator" content="Hugo 0.82.0" />
+  <meta name="generator" content="Hugo 0.148.0">
   
   <meta name="description" content="Introduction La curiosité m’a piqué après la lecture de ce post : Hello world
 Du coup j’apporte ma contribution avec le language Nim
 Tous les tests sont effectués sous :
- VoidLinux VoidLinux  MUSL 1.1.24 GLIBC 2.30   GCC 9.2.0 GNU GCC Nim 1.0.4 Nim UPX 3.95 UPX  Le code source sous Nim est des plus simple :
--bash-5.0# cat hello.nim echo(&#34;Hello world&#34;) -bash-5.0#    Test case Execution time Total syscalls Unique syscalls Size (KiB)     Nim (musl, static) 0.">
+VoidLinux VoidLinux MUSL 1.1.24 GLIBC 2.30 GCC 9.2.0 GNU GCC Nim 1.0.4 Nim UPX 3.95 UPX Le code source sous Nim est des plus simple :
+-bash-5.0# cat hello.nim echo(&#34;Hello world&#34;) -bash-5.0# Test case Execution time Total syscalls Unique syscalls Size (KiB) Nim (musl, static) 0.00s real 16 8 34.3 KiB Nim (musl, dynamic) 0.00s real 18 9 30.6 KiB Nim (glibc, static) 0.00s real 19 10 713.5 KiB Nim (glibc, dynamic) 0.00s real 46 14 30.9 KiB Nim (musl, static, upx) 0.00s real 34 13 17.8 KiB Nim (glibc, static, upx) 0.00s real 37 14 280.3 KiB Nim (musl, static, danger, upx) 0.00s real 34 13 15.0 KiB Nim taille des binaires Introduction Nim - MUSL Static Nim - MUSL Dynamic Nim - GLIBC Static Nim - GLIBC Dynamic UPX Nim MUSL Static Nim GLIBC Static Nim MUSL Static, avec option de compilation «danger» Nim - MUSL Static -bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim Hint: used config file &#39;/usr/lib/nim/config/nim.cfg&#39; [Conf] Hint: system [Processing] Hint: widestrs [Processing] Hint: io [Processing] Hint: hello [Processing] Hint: [Link] Hint: operation successful (14431 lines compiled; 0.200 sec total; 15.976MiB peakmem; Release Build) [SuccessX] -bash-5.0# -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 54336 Jan 5 11:30 hello -bash-5.0# strip -s ./hello -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 34328 Jan 5 11:31 hello -bash-5.0# -bash-5.0# ./hello Hello world -bash-5.0# -bash-5.0# file hello hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=54b23b1f1bb2ca9598c64a9a844de962ba22622b, stripped -bash-5.0# ldd hello ldd: hello: Not a valid dynamic program -bash-5.0# -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 80.42 0.002932 2931 1 execve 6.26 0.000228 228 1 writev 3.12 0.000114 18 6 rt_sigaction 3.10 0.000114 56 2 mmap 2.46 0.000090 90 1 arch_prctl 2.42 0.000088 88 1 set_tid_address 1.64 0.000060 19 3 rt_sigprocmask 0.56 0.000020 20 1 ioctl ------ ----------- ----------- --------- --------- ---------------- 100.00 0.003646 16 total -bash-5.0# Nim - MUSL Dynamic -bash-5.0# cat hello.nim echo(&#34;Hello world&#34;) -bash-5.0# -bash-5.0# nim -d:release --opt:size c hello.nim Hint: used config file &#39;/usr/lib/nim/config/nim.cfg&#39; [Conf] Hint: system [Processing] Hint: widestrs [Processing] Hint: io [Processing] Hint: hello [Processing] CC: hello.nim Hint: [Link] Hint: operation successful (14431 lines compiled; 0.250 sec total; 16.004MiB peakmem; Release Build) [SuccessX] -bash-5.0# -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 47128 Jan 5 11:27 hello -bash-5.0# strip -s hello -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 30696 Jan 5 11:27 hello -bash-5.0# -bash-5.0# ./hello Hello world -bash-5.0# -bash-5.0# file hello hello: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, BuildID[sha1]=355f1d6a54526a182a0cd5cd7ebdd78399735eff, stripped -bash-5.0# ldd ./hello /lib/ld-musl-x86_64.so.1 (0x7fe39a4f6000) libc.so =&gt; /lib/ld-musl-x86_64.so.1 (0x7fe39a4f6000) -bash-5.0# -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 79.66 0.003090 3090 1 execve 5.64 0.000218 218 1 writev 3.66 0.000142 70 2 mprotect 3.04 0.000118 19 6 rt_sigaction 2.34 0.000090 90 1 set_tid_address 2.34 0.000090 90 1 arch_prctl 1.52 0.000060 19 3 rt_sigprocmask 1.30 0.000050 25 2 mmap 0.52 0.000020 20 1 ioctl ------ ----------- ----------- --------- --------- ---------------- 100.00 0.003880 18 total -bash-5.0# Nim - GLIBC Static -bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim Hint: used config file &#39;/usr/lib/nim/config/nim.cfg&#39; [Conf] Hint: system [Processing] Hint: widestrs [Processing] Hint: io [Processing] Hint: hello [Processing] Hint: [Link] Hint: operation successful (14431 lines compiled; 0.305 sec total; 16.008MiB peakmem; Release Build) [SuccessX] -bash-5.0# -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 799336 Jan 5 11:43 hello -bash-5.0# strip -s ./hello -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 713520 Jan 5 11:43 hello -bash-5.0# -bash-5.0# ./hello Hello world -bash-5.0# -bash-5.0# file hello hello: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=0c9833550755f7aaa7b3017ea3e9d90ca8d92f02, for GNU/Linux 3.2.0, stripped -bash-5.0# ldd hello not a dynamic executable -bash-5.0# -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 76.70 0.002868 2867 1 execve 7.79 0.000291 72 4 brk 5.82 0.000218 217 1 write 3.33 0.000124 20 6 rt_sigaction 2.47 0.000092 92 1 readlink 1.25 0.000047 23 2 mmap 0.83 0.000031 30 1 fstat 0.62 0.000023 23 1 uname 0.62 0.000023 23 1 arch_prctl 0.58 0.000022 21 1 ioctl ------ ----------- ----------- --------- --------- ---------------- 100.00 0.003739 19 total -bash-5.0# Nim - GLIBC Dynamic -bash-5.0# cat hello.nim echo(&#34;Hello world&#34;) -bash-5.0# -bash-5.0# nim -d:release --opt:size c hello.nim Hint: used config file &#39;/usr/lib/nim/config/nim.cfg&#39; [Conf] Hint: system [Processing] Hint: widestrs [Processing] Hint: io [Processing] Hint: hello [Processing] CC: stdlib_io.nim CC: stdlib_system.nim CC: hello.nim Hint: [Link] Hint: operation successful (14431 lines compiled; 0.895 sec total; 16.012MiB peakmem; Release Build) [SuccessX] -bash-5.0# -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 45792 Jan 5 11:42 hello -bash-5.0# strip -s hello -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 30952 Jan 5 11:42 hello -bash-5.0# -bash-5.0# file hello hello: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-x86-64.so.2, BuildID[sha1]=bc75b867f4aaa8c9af58ee29430b098b03de475f, for GNU/Linux 3.2.0, stripped -bash-5.0# -bash-5.0# ldd hello linux-vdso.so.1 (0x00007fffea4eb000) libdl.so.2 =&gt; /usr/lib/libdl.so.2 (0x00007fdf53c1b000) libc.so.6 =&gt; /usr/lib/libc.so.6 (0x00007fdf53a4d000) /lib/ld-linux-x86-64.so.2 (0x00007fdf53c41000) -bash-5.0# -bash-5.0# ./hello Hello world -bash-5.0# -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 61.30 0.003148 3148 1 execve 11.61 0.000596 42 14 mmap 6.70 0.000344 114 3 openat 3.99 0.000205 204 1 write 3.10 0.000159 159 1 1 access 2.59 0.000133 44 3 brk 2.20 0.000113 22 5 mprotect 2.14 0.000110 18 6 rt_sigaction 1.81 0.000093 23 4 fstat 1.77 0.000091 30 3 close 1.23 0.000063 31 2 read 0.82 0.000042 42 1 munmap 0.39 0.000020 19 1 ioctl 0.35 0.000018 18 1 arch_prctl ------ ----------- ----------- --------- --------- ---------------- 100.00 0.005136 46 1 total -bash-5.0# UPX Nim MUSL Static -bash-5.0# upx --best ./hello Ultimate Packer for eXecutables Copyright (C) 1996 - 2018 UPX 3.95 Markus Oberhumer, Laszlo Molnar &amp; John Reiser Aug 26th 2018 File size Ratio Format Name -------------------- ------ ----------- ----------- 34328 -&gt; 17832 51.95% linux/amd64 hello Packed 1 file. -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 17832 Jan 5 11:31 hello -bash-5.0# ./hello Hello world -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 65.78 0.002426 2425 1 execve 10.80 0.000398 36 11 mmap 5.82 0.000214 214 1 writev 4.10 0.000152 151 1 open 4.00 0.000148 29 5 mprotect 3.00 0.000110 18 6 rt_sigaction 1.60 0.000058 19 3 rt_sigprocmask 1.60 0.000058 58 1 readlink 1.00 0.000036 36 1 close 0.74 0.000028 27 1 munmap 0.54 0.000020 19 1 ioctl 0.54 0.000020 19 1 arch_prctl 0.48 0.000018 17 1 set_tid_address ------ ----------- ----------- --------- --------- ---------------- 100.00 0.003688 34 total -bash-5.0# Nim GLIBC Static -bash-5.0# upx --best hello Ultimate Packer for eXecutables Copyright (C) 1996 - 2018 UPX 3.95 Markus Oberhumer, Laszlo Molnar &amp; John Reiser Aug 26th 2018 File size Ratio Format Name -------------------- ------ ----------- ----------- 713520 -&gt; 280348 39.29% linux/amd64 hello Packed 1 file. -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 280348 Jan 5 11:43 hello -bash-5.0# ./hello Hello world -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 60.51 0.002849 2849 1 execve 13.85 0.000652 59 11 mmap 7.59 0.000358 71 5 mprotect 4.23 0.000199 199 1 write 4.05 0.000191 190 1 open 2.45 0.000115 19 6 rt_sigaction 1.92 0.000091 22 4 brk 1.51 0.000071 35 2 readlink 1.12 0.000053 52 1 munmap 0.87 0.000041 41 1 close 0.51 0.000024 23 1 fstat 0.46 0.000022 21 1 ioctl 0.46 0.000022 21 1 uname 0.46 0.000022 21 1 arch_prctl ------ ----------- ----------- --------- --------- ---------------- 100.00 0.004709 37 total -bash-5.0# Nim MUSL Static, avec option de compilation «danger» bash-5.0# nim --passL:-static -d:release -d:danger --opt:size --app:console c hello.nim Hint: used config file &#39;/usr/lib/nim/config/nim.cfg&#39; [Conf] Hint: system [Processing] Hint: widestrs [Processing] Hint: io [Processing] Hint: hello [Processing] Hint: [Link] Hint: operation successful (14431 lines compiled; 0.198 sec total; 16MiB peakmem; Dangerous Release Build) [SuccessX] -bash-5.0# strip -s hello -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 30232 Jan 5 16:21 hello -bash-5.0# upx --best hello Ultimate Packer for eXecutables Copyright (C) 1996 - 2018 UPX 3.95 Markus Oberhumer, Laszlo Molnar &amp; John Reiser Aug 26th 2018 File size Ratio Format Name -------------------- ------ ----------- ----------- 30232 -&gt; 15092 49.92% linux/amd64 hello Packed 1 file. -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 15092 Jan 5 16:21 hello -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 69.00 0.003034 3034 1 execve 12.64 0.000556 50 11 mmap 4.86 0.000214 214 1 open 2.78 0.000122 24 5 mprotect 2.78 0.000122 122 1 writev 2.58 0.000114 18 6 rt_sigaction 1.34 0.000060 19 3 rt_sigprocmask 1.06 0.000046 46 1 close 1.00 0.000044 44 1 readlink 0.62 0.000028 27 1 munmap 0.46 0.000020 19 1 arch_prctl 0.46 0.000020 19 1 ioctl 0.40 0.000018 17 1 set_tid_address ------ ----------- ----------- --------- --------- ---------------- 100.00 0.004398 34 total -bash-5.0# ">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   
   
@@ -180,70 +180,70 @@ audio {
 <li>UPX 3.95 <a href="https://upx.github.io/">UPX</a></li>
 </ul>
 <p>Le code source sous Nim est des plus simple :</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# cat hello.nim
-echo<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello world&#34;</span><span style="color:#f92672">)</span>
--bash-5.0#
-</code></pre></div><table>
-<thead>
-<tr>
-<th>Test case</th>
-<th>Execution time</th>
-<th>Total syscalls</th>
-<th>Unique syscalls</th>
-<th>Size (KiB)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Nim (musl, static)</td>
-<td>0.00s real</td>
-<td>16</td>
-<td>8</td>
-<td>34.3 KiB</td>
-</tr>
-<tr>
-<td>Nim (musl, dynamic)</td>
-<td>0.00s real</td>
-<td>18</td>
-<td>9</td>
-<td>30.6 KiB</td>
-</tr>
-<tr>
-<td>Nim (glibc, static)</td>
-<td>0.00s real</td>
-<td>19</td>
-<td>10</td>
-<td>713.5 KiB</td>
-</tr>
-<tr>
-<td>Nim (glibc, dynamic)</td>
-<td>0.00s real</td>
-<td>46</td>
-<td>14</td>
-<td>30.9 KiB</td>
-</tr>
-<tr>
-<td>Nim (musl, static, upx)</td>
-<td>0.00s real</td>
-<td>34</td>
-<td>13</td>
-<td>17.8 KiB</td>
-</tr>
-<tr>
-<td>Nim (glibc, static, upx)</td>
-<td>0.00s real</td>
-<td>37</td>
-<td>14</td>
-<td>280.3 KiB</td>
-</tr>
-<tr>
-<td>Nim (musl, static, danger, upx)</td>
-<td>0.00s real</td>
-<td>34</td>
-<td>13</td>
-<td>15.0 KiB</td>
-</tr>
-</tbody>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# cat hello.nim
+</span></span><span style="display:flex;"><span>echo<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello world&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><table>
+  <thead>
+      <tr>
+          <th>Test case</th>
+          <th>Execution time</th>
+          <th>Total syscalls</th>
+          <th>Unique syscalls</th>
+          <th>Size (KiB)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Nim (musl, static)</td>
+          <td>0.00s real</td>
+          <td>16</td>
+          <td>8</td>
+          <td>34.3 KiB</td>
+      </tr>
+      <tr>
+          <td>Nim (musl, dynamic)</td>
+          <td>0.00s real</td>
+          <td>18</td>
+          <td>9</td>
+          <td>30.6 KiB</td>
+      </tr>
+      <tr>
+          <td>Nim (glibc, static)</td>
+          <td>0.00s real</td>
+          <td>19</td>
+          <td>10</td>
+          <td>713.5 KiB</td>
+      </tr>
+      <tr>
+          <td>Nim (glibc, dynamic)</td>
+          <td>0.00s real</td>
+          <td>46</td>
+          <td>14</td>
+          <td>30.9 KiB</td>
+      </tr>
+      <tr>
+          <td>Nim (musl, static, upx)</td>
+          <td>0.00s real</td>
+          <td>34</td>
+          <td>13</td>
+          <td>17.8 KiB</td>
+      </tr>
+      <tr>
+          <td>Nim (glibc, static, upx)</td>
+          <td>0.00s real</td>
+          <td>37</td>
+          <td>14</td>
+          <td>280.3 KiB</td>
+      </tr>
+      <tr>
+          <td>Nim (musl, static, danger, upx)</td>
+          <td>0.00s real</td>
+          <td>34</td>
+          <td>13</td>
+          <td>15.0 KiB</td>
+      </tr>
+  </tbody>
 </table>
 <ul>
 <li><a href="#nim-taille-des-binaires">Nim taille des binaires</a>
@@ -264,302 +264,302 @@ echo<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello w
 </li>
 </ul>
 <h1 id="nim---musl-static">Nim - MUSL Static</h1>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim
-Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
-Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: io <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: hello <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
-Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.200 sec total; 15.976MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">54336</span> Jan  <span style="color:#ae81ff">5</span> 11:30 hello
--bash-5.0# strip -s ./hello
--bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">34328</span> Jan  <span style="color:#ae81ff">5</span> 11:31 hello
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# ./hello
-Hello world
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# file hello
-hello: ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>54b23b1f1bb2ca9598c64a9a844de962ba22622b, stripped
--bash-5.0# ldd hello
-ldd: hello: Not a valid dynamic program
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# strace -cwf ./hello
-Hello world
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
- 80.42    0.002932        <span style="color:#ae81ff">2931</span>         <span style="color:#ae81ff">1</span>           execve
-  6.26    0.000228         <span style="color:#ae81ff">228</span>         <span style="color:#ae81ff">1</span>           writev
-  3.12    0.000114          <span style="color:#ae81ff">18</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
-  3.10    0.000114          <span style="color:#ae81ff">56</span>         <span style="color:#ae81ff">2</span>           mmap
-  2.46    0.000090          <span style="color:#ae81ff">90</span>         <span style="color:#ae81ff">1</span>           arch_prctl
-  2.42    0.000088          <span style="color:#ae81ff">88</span>         <span style="color:#ae81ff">1</span>           set_tid_address
-  1.64    0.000060          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">3</span>           rt_sigprocmask
-  0.56    0.000020          <span style="color:#ae81ff">20</span>         <span style="color:#ae81ff">1</span>           ioctl
------- ----------- ----------- --------- --------- ----------------
-100.00    0.003646                    <span style="color:#ae81ff">16</span>           total
--bash-5.0#
-</code></pre></div><h1 id="nim---musl-dynamic">Nim - MUSL Dynamic</h1>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# cat hello.nim
-echo<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello world&#34;</span><span style="color:#f92672">)</span>
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# nim -d:release --opt:size c hello.nim
-Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
-Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: io <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: hello <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-CC: hello.nim
-Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
-Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.250 sec total; 16.004MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">47128</span> Jan  <span style="color:#ae81ff">5</span> 11:27 hello
--bash-5.0# strip -s hello
--bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">30696</span> Jan  <span style="color:#ae81ff">5</span> 11:27 hello
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# ./hello
-Hello world
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# file hello
-hello: ELF 64-bit LSB pie executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>355f1d6a54526a182a0cd5cd7ebdd78399735eff, stripped
--bash-5.0# ldd ./hello
-        /lib/ld-musl-x86_64.so.1 <span style="color:#f92672">(</span>0x7fe39a4f6000<span style="color:#f92672">)</span>
-        libc.so <span style="color:#f92672">=</span>&gt; /lib/ld-musl-x86_64.so.1 <span style="color:#f92672">(</span>0x7fe39a4f6000<span style="color:#f92672">)</span>
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# strace -cwf ./hello
-Hello world
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
- 79.66    0.003090        <span style="color:#ae81ff">3090</span>         <span style="color:#ae81ff">1</span>           execve
-  5.64    0.000218         <span style="color:#ae81ff">218</span>         <span style="color:#ae81ff">1</span>           writev
-  3.66    0.000142          <span style="color:#ae81ff">70</span>         <span style="color:#ae81ff">2</span>           mprotect
-  3.04    0.000118          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
-  2.34    0.000090          <span style="color:#ae81ff">90</span>         <span style="color:#ae81ff">1</span>           set_tid_address
-  2.34    0.000090          <span style="color:#ae81ff">90</span>         <span style="color:#ae81ff">1</span>           arch_prctl
-  1.52    0.000060          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">3</span>           rt_sigprocmask
-  1.30    0.000050          <span style="color:#ae81ff">25</span>         <span style="color:#ae81ff">2</span>           mmap
-  0.52    0.000020          <span style="color:#ae81ff">20</span>         <span style="color:#ae81ff">1</span>           ioctl
------- ----------- ----------- --------- --------- ----------------
-100.00    0.003880                    <span style="color:#ae81ff">18</span>           total
--bash-5.0#
-</code></pre></div><h1 id="nim---glibc-static">Nim - GLIBC Static</h1>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim
-Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
-Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: io <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: hello <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
-Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.305 sec total; 16.008MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">799336</span> Jan  <span style="color:#ae81ff">5</span> 11:43 hello
--bash-5.0# strip -s ./hello
--bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">713520</span> Jan  <span style="color:#ae81ff">5</span> 11:43 hello
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# ./hello
-Hello world
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# file hello
-hello: ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>GNU/Linux<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>0c9833550755f7aaa7b3017ea3e9d90ca8d92f02, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
--bash-5.0# ldd hello
-        not a dynamic executable
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# strace -cwf ./hello
-Hello world
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
- 76.70    0.002868        <span style="color:#ae81ff">2867</span>         <span style="color:#ae81ff">1</span>           execve
-  7.79    0.000291          <span style="color:#ae81ff">72</span>         <span style="color:#ae81ff">4</span>           brk
-  5.82    0.000218         <span style="color:#ae81ff">217</span>         <span style="color:#ae81ff">1</span>           write
-  3.33    0.000124          <span style="color:#ae81ff">20</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
-  2.47    0.000092          <span style="color:#ae81ff">92</span>         <span style="color:#ae81ff">1</span>           readlink
-  1.25    0.000047          <span style="color:#ae81ff">23</span>         <span style="color:#ae81ff">2</span>           mmap
-  0.83    0.000031          <span style="color:#ae81ff">30</span>         <span style="color:#ae81ff">1</span>           fstat
-  0.62    0.000023          <span style="color:#ae81ff">23</span>         <span style="color:#ae81ff">1</span>           uname
-  0.62    0.000023          <span style="color:#ae81ff">23</span>         <span style="color:#ae81ff">1</span>           arch_prctl
-  0.58    0.000022          <span style="color:#ae81ff">21</span>         <span style="color:#ae81ff">1</span>           ioctl
------- ----------- ----------- --------- --------- ----------------
-100.00    0.003739                    <span style="color:#ae81ff">19</span>           total
--bash-5.0#
-</code></pre></div><h1 id="nim---glibc-dynamic">Nim - GLIBC Dynamic</h1>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# cat hello.nim
-echo<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello world&#34;</span><span style="color:#f92672">)</span>
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# nim -d:release --opt:size c hello.nim
-Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
-Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: io <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: hello <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-CC: stdlib_io.nim
-CC: stdlib_system.nim
-CC: hello.nim
-Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
-Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.895 sec total; 16.012MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">45792</span> Jan  <span style="color:#ae81ff">5</span> 11:42 hello
--bash-5.0# strip -s hello
--bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">30952</span> Jan  <span style="color:#ae81ff">5</span> 11:42 hello
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# file hello
-hello: ELF 64-bit LSB pie executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, dynamically linked, interpreter /lib/ld-linux-x86-64.so.2, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>bc75b867f4aaa8c9af58ee29430b098b03de475f, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
--bash-5.0#
--bash-5.0# ldd hello
-        linux-vdso.so.1 <span style="color:#f92672">(</span>0x00007fffea4eb000<span style="color:#f92672">)</span>
-        libdl.so.2 <span style="color:#f92672">=</span>&gt; /usr/lib/libdl.so.2 <span style="color:#f92672">(</span>0x00007fdf53c1b000<span style="color:#f92672">)</span>
-        libc.so.6 <span style="color:#f92672">=</span>&gt; /usr/lib/libc.so.6 <span style="color:#f92672">(</span>0x00007fdf53a4d000<span style="color:#f92672">)</span>
-        /lib/ld-linux-x86-64.so.2 <span style="color:#f92672">(</span>0x00007fdf53c41000<span style="color:#f92672">)</span>
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# ./hello
-Hello world
--bash-5.0#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# strace -cwf ./hello
-Hello world
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
- 61.30    0.003148        <span style="color:#ae81ff">3148</span>         <span style="color:#ae81ff">1</span>           execve
- 11.61    0.000596          <span style="color:#ae81ff">42</span>        <span style="color:#ae81ff">14</span>           mmap
-  6.70    0.000344         <span style="color:#ae81ff">114</span>         <span style="color:#ae81ff">3</span>           openat
-  3.99    0.000205         <span style="color:#ae81ff">204</span>         <span style="color:#ae81ff">1</span>           write
-  3.10    0.000159         <span style="color:#ae81ff">159</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span> access
-  2.59    0.000133          <span style="color:#ae81ff">44</span>         <span style="color:#ae81ff">3</span>           brk
-  2.20    0.000113          <span style="color:#ae81ff">22</span>         <span style="color:#ae81ff">5</span>           mprotect
-  2.14    0.000110          <span style="color:#ae81ff">18</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
-  1.81    0.000093          <span style="color:#ae81ff">23</span>         <span style="color:#ae81ff">4</span>           fstat
-  1.77    0.000091          <span style="color:#ae81ff">30</span>         <span style="color:#ae81ff">3</span>           close
-  1.23    0.000063          <span style="color:#ae81ff">31</span>         <span style="color:#ae81ff">2</span>           read
-  0.82    0.000042          <span style="color:#ae81ff">42</span>         <span style="color:#ae81ff">1</span>           munmap
-  0.39    0.000020          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">1</span>           ioctl
-  0.35    0.000018          <span style="color:#ae81ff">18</span>         <span style="color:#ae81ff">1</span>           arch_prctl
------- ----------- ----------- --------- --------- ----------------
-100.00    0.005136                    <span style="color:#ae81ff">46</span>         <span style="color:#ae81ff">1</span> total
--bash-5.0#
-</code></pre></div><h1 id="upx">UPX</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim
+</span></span><span style="display:flex;"><span>Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: io <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: hello <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.200 sec total; 15.976MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">54336</span> Jan  <span style="color:#ae81ff">5</span> 11:30 hello
+</span></span><span style="display:flex;"><span>-bash-5.0# strip -s ./hello
+</span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">34328</span> Jan  <span style="color:#ae81ff">5</span> 11:31 hello
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
+</span></span><span style="display:flex;"><span>hello: ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>54b23b1f1bb2ca9598c64a9a844de962ba22622b, stripped
+</span></span><span style="display:flex;"><span>-bash-5.0# ldd hello
+</span></span><span style="display:flex;"><span>ldd: hello: Not a valid dynamic program
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>% time     seconds  usecs/call     calls    errors syscall
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span> 80.42    0.002932        <span style="color:#ae81ff">2931</span>         <span style="color:#ae81ff">1</span>           execve
+</span></span><span style="display:flex;"><span>  6.26    0.000228         <span style="color:#ae81ff">228</span>         <span style="color:#ae81ff">1</span>           writev
+</span></span><span style="display:flex;"><span>  3.12    0.000114          <span style="color:#ae81ff">18</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
+</span></span><span style="display:flex;"><span>  3.10    0.000114          <span style="color:#ae81ff">56</span>         <span style="color:#ae81ff">2</span>           mmap
+</span></span><span style="display:flex;"><span>  2.46    0.000090          <span style="color:#ae81ff">90</span>         <span style="color:#ae81ff">1</span>           arch_prctl
+</span></span><span style="display:flex;"><span>  2.42    0.000088          <span style="color:#ae81ff">88</span>         <span style="color:#ae81ff">1</span>           set_tid_address
+</span></span><span style="display:flex;"><span>  1.64    0.000060          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">3</span>           rt_sigprocmask
+</span></span><span style="display:flex;"><span>  0.56    0.000020          <span style="color:#ae81ff">20</span>         <span style="color:#ae81ff">1</span>           ioctl
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span>100.00    0.003646                    <span style="color:#ae81ff">16</span>           total
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><h1 id="nim---musl-dynamic">Nim - MUSL Dynamic</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# cat hello.nim
+</span></span><span style="display:flex;"><span>echo<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello world&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim -d:release --opt:size c hello.nim
+</span></span><span style="display:flex;"><span>Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: io <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: hello <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>CC: hello.nim
+</span></span><span style="display:flex;"><span>Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.250 sec total; 16.004MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">47128</span> Jan  <span style="color:#ae81ff">5</span> 11:27 hello
+</span></span><span style="display:flex;"><span>-bash-5.0# strip -s hello
+</span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">30696</span> Jan  <span style="color:#ae81ff">5</span> 11:27 hello
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
+</span></span><span style="display:flex;"><span>hello: ELF 64-bit LSB pie executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>355f1d6a54526a182a0cd5cd7ebdd78399735eff, stripped
+</span></span><span style="display:flex;"><span>-bash-5.0# ldd ./hello
+</span></span><span style="display:flex;"><span>        /lib/ld-musl-x86_64.so.1 <span style="color:#f92672">(</span>0x7fe39a4f6000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        libc.so <span style="color:#f92672">=</span>&gt; /lib/ld-musl-x86_64.so.1 <span style="color:#f92672">(</span>0x7fe39a4f6000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>% time     seconds  usecs/call     calls    errors syscall
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span> 79.66    0.003090        <span style="color:#ae81ff">3090</span>         <span style="color:#ae81ff">1</span>           execve
+</span></span><span style="display:flex;"><span>  5.64    0.000218         <span style="color:#ae81ff">218</span>         <span style="color:#ae81ff">1</span>           writev
+</span></span><span style="display:flex;"><span>  3.66    0.000142          <span style="color:#ae81ff">70</span>         <span style="color:#ae81ff">2</span>           mprotect
+</span></span><span style="display:flex;"><span>  3.04    0.000118          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
+</span></span><span style="display:flex;"><span>  2.34    0.000090          <span style="color:#ae81ff">90</span>         <span style="color:#ae81ff">1</span>           set_tid_address
+</span></span><span style="display:flex;"><span>  2.34    0.000090          <span style="color:#ae81ff">90</span>         <span style="color:#ae81ff">1</span>           arch_prctl
+</span></span><span style="display:flex;"><span>  1.52    0.000060          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">3</span>           rt_sigprocmask
+</span></span><span style="display:flex;"><span>  1.30    0.000050          <span style="color:#ae81ff">25</span>         <span style="color:#ae81ff">2</span>           mmap
+</span></span><span style="display:flex;"><span>  0.52    0.000020          <span style="color:#ae81ff">20</span>         <span style="color:#ae81ff">1</span>           ioctl
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span>100.00    0.003880                    <span style="color:#ae81ff">18</span>           total
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><h1 id="nim---glibc-static">Nim - GLIBC Static</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim
+</span></span><span style="display:flex;"><span>Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: io <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: hello <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.305 sec total; 16.008MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">799336</span> Jan  <span style="color:#ae81ff">5</span> 11:43 hello
+</span></span><span style="display:flex;"><span>-bash-5.0# strip -s ./hello
+</span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">713520</span> Jan  <span style="color:#ae81ff">5</span> 11:43 hello
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
+</span></span><span style="display:flex;"><span>hello: ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>GNU/Linux<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>0c9833550755f7aaa7b3017ea3e9d90ca8d92f02, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
+</span></span><span style="display:flex;"><span>-bash-5.0# ldd hello
+</span></span><span style="display:flex;"><span>        not a dynamic executable
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>% time     seconds  usecs/call     calls    errors syscall
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span> 76.70    0.002868        <span style="color:#ae81ff">2867</span>         <span style="color:#ae81ff">1</span>           execve
+</span></span><span style="display:flex;"><span>  7.79    0.000291          <span style="color:#ae81ff">72</span>         <span style="color:#ae81ff">4</span>           brk
+</span></span><span style="display:flex;"><span>  5.82    0.000218         <span style="color:#ae81ff">217</span>         <span style="color:#ae81ff">1</span>           write
+</span></span><span style="display:flex;"><span>  3.33    0.000124          <span style="color:#ae81ff">20</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
+</span></span><span style="display:flex;"><span>  2.47    0.000092          <span style="color:#ae81ff">92</span>         <span style="color:#ae81ff">1</span>           readlink
+</span></span><span style="display:flex;"><span>  1.25    0.000047          <span style="color:#ae81ff">23</span>         <span style="color:#ae81ff">2</span>           mmap
+</span></span><span style="display:flex;"><span>  0.83    0.000031          <span style="color:#ae81ff">30</span>         <span style="color:#ae81ff">1</span>           fstat
+</span></span><span style="display:flex;"><span>  0.62    0.000023          <span style="color:#ae81ff">23</span>         <span style="color:#ae81ff">1</span>           uname
+</span></span><span style="display:flex;"><span>  0.62    0.000023          <span style="color:#ae81ff">23</span>         <span style="color:#ae81ff">1</span>           arch_prctl
+</span></span><span style="display:flex;"><span>  0.58    0.000022          <span style="color:#ae81ff">21</span>         <span style="color:#ae81ff">1</span>           ioctl
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span>100.00    0.003739                    <span style="color:#ae81ff">19</span>           total
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><h1 id="nim---glibc-dynamic">Nim - GLIBC Dynamic</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# cat hello.nim
+</span></span><span style="display:flex;"><span>echo<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello world&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim -d:release --opt:size c hello.nim
+</span></span><span style="display:flex;"><span>Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: io <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: hello <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>CC: stdlib_io.nim
+</span></span><span style="display:flex;"><span>CC: stdlib_system.nim
+</span></span><span style="display:flex;"><span>CC: hello.nim
+</span></span><span style="display:flex;"><span>Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.895 sec total; 16.012MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">45792</span> Jan  <span style="color:#ae81ff">5</span> 11:42 hello
+</span></span><span style="display:flex;"><span>-bash-5.0# strip -s hello
+</span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">30952</span> Jan  <span style="color:#ae81ff">5</span> 11:42 hello
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
+</span></span><span style="display:flex;"><span>hello: ELF 64-bit LSB pie executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, dynamically linked, interpreter /lib/ld-linux-x86-64.so.2, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>bc75b867f4aaa8c9af58ee29430b098b03de475f, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span><span style="display:flex;"><span>-bash-5.0# ldd hello
+</span></span><span style="display:flex;"><span>        linux-vdso.so.1 <span style="color:#f92672">(</span>0x00007fffea4eb000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        libdl.so.2 <span style="color:#f92672">=</span>&gt; /usr/lib/libdl.so.2 <span style="color:#f92672">(</span>0x00007fdf53c1b000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        libc.so.6 <span style="color:#f92672">=</span>&gt; /usr/lib/libc.so.6 <span style="color:#f92672">(</span>0x00007fdf53a4d000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        /lib/ld-linux-x86-64.so.2 <span style="color:#f92672">(</span>0x00007fdf53c41000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>% time     seconds  usecs/call     calls    errors syscall
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span> 61.30    0.003148        <span style="color:#ae81ff">3148</span>         <span style="color:#ae81ff">1</span>           execve
+</span></span><span style="display:flex;"><span> 11.61    0.000596          <span style="color:#ae81ff">42</span>        <span style="color:#ae81ff">14</span>           mmap
+</span></span><span style="display:flex;"><span>  6.70    0.000344         <span style="color:#ae81ff">114</span>         <span style="color:#ae81ff">3</span>           openat
+</span></span><span style="display:flex;"><span>  3.99    0.000205         <span style="color:#ae81ff">204</span>         <span style="color:#ae81ff">1</span>           write
+</span></span><span style="display:flex;"><span>  3.10    0.000159         <span style="color:#ae81ff">159</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span> access
+</span></span><span style="display:flex;"><span>  2.59    0.000133          <span style="color:#ae81ff">44</span>         <span style="color:#ae81ff">3</span>           brk
+</span></span><span style="display:flex;"><span>  2.20    0.000113          <span style="color:#ae81ff">22</span>         <span style="color:#ae81ff">5</span>           mprotect
+</span></span><span style="display:flex;"><span>  2.14    0.000110          <span style="color:#ae81ff">18</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
+</span></span><span style="display:flex;"><span>  1.81    0.000093          <span style="color:#ae81ff">23</span>         <span style="color:#ae81ff">4</span>           fstat
+</span></span><span style="display:flex;"><span>  1.77    0.000091          <span style="color:#ae81ff">30</span>         <span style="color:#ae81ff">3</span>           close
+</span></span><span style="display:flex;"><span>  1.23    0.000063          <span style="color:#ae81ff">31</span>         <span style="color:#ae81ff">2</span>           read
+</span></span><span style="display:flex;"><span>  0.82    0.000042          <span style="color:#ae81ff">42</span>         <span style="color:#ae81ff">1</span>           munmap
+</span></span><span style="display:flex;"><span>  0.39    0.000020          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">1</span>           ioctl
+</span></span><span style="display:flex;"><span>  0.35    0.000018          <span style="color:#ae81ff">18</span>         <span style="color:#ae81ff">1</span>           arch_prctl
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span>100.00    0.005136                    <span style="color:#ae81ff">46</span>         <span style="color:#ae81ff">1</span> total
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><h1 id="upx">UPX</h1>
 <h2 id="nim-musl-static">Nim MUSL Static</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# upx --best ./hello
-                       Ultimate Packer <span style="color:#66d9ef">for</span> eXecutables
-                          Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">1996</span> - <span style="color:#ae81ff">2018</span>
-UPX 3.95        Markus Oberhumer, Laszlo Molnar &amp; John Reiser   Aug 26th <span style="color:#ae81ff">2018</span>
-
-        File size         Ratio      Format      Name
-   --------------------   ------   -----------   -----------
-     <span style="color:#ae81ff">34328</span> -&gt;     <span style="color:#ae81ff">17832</span>   51.95%   linux/amd64   hello
-
-Packed <span style="color:#ae81ff">1</span> file.
--bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">17832</span> Jan  <span style="color:#ae81ff">5</span> 11:31 hello
--bash-5.0# ./hello
-Hello world
--bash-5.0# strace -cwf ./hello
-Hello world
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
- 65.78    0.002426        <span style="color:#ae81ff">2425</span>         <span style="color:#ae81ff">1</span>           execve
- 10.80    0.000398          <span style="color:#ae81ff">36</span>        <span style="color:#ae81ff">11</span>           mmap
-  5.82    0.000214         <span style="color:#ae81ff">214</span>         <span style="color:#ae81ff">1</span>           writev
-  4.10    0.000152         <span style="color:#ae81ff">151</span>         <span style="color:#ae81ff">1</span>           open
-  4.00    0.000148          <span style="color:#ae81ff">29</span>         <span style="color:#ae81ff">5</span>           mprotect
-  3.00    0.000110          <span style="color:#ae81ff">18</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
-  1.60    0.000058          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">3</span>           rt_sigprocmask
-  1.60    0.000058          <span style="color:#ae81ff">58</span>         <span style="color:#ae81ff">1</span>           readlink
-  1.00    0.000036          <span style="color:#ae81ff">36</span>         <span style="color:#ae81ff">1</span>           close
-  0.74    0.000028          <span style="color:#ae81ff">27</span>         <span style="color:#ae81ff">1</span>           munmap
-  0.54    0.000020          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">1</span>           ioctl
-  0.54    0.000020          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">1</span>           arch_prctl
-  0.48    0.000018          <span style="color:#ae81ff">17</span>         <span style="color:#ae81ff">1</span>           set_tid_address
------- ----------- ----------- --------- --------- ----------------
-100.00    0.003688                    <span style="color:#ae81ff">34</span>           total
--bash-5.0#
-</code></pre></div><h2 id="nim-glibc-static">Nim GLIBC Static</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">-bash-5.0# upx --best hello
-                       Ultimate Packer <span style="color:#66d9ef">for</span> eXecutables
-                          Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">1996</span> - <span style="color:#ae81ff">2018</span>
-UPX 3.95        Markus Oberhumer, Laszlo Molnar &amp; John Reiser   Aug 26th <span style="color:#ae81ff">2018</span>
-
-        File size         Ratio      Format      Name
-   --------------------   ------   -----------   -----------
-    <span style="color:#ae81ff">713520</span> -&gt;    <span style="color:#ae81ff">280348</span>   39.29%   linux/amd64   hello
-
-Packed <span style="color:#ae81ff">1</span> file.
--bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">280348</span> Jan  <span style="color:#ae81ff">5</span> 11:43 hello
--bash-5.0# ./hello
-Hello world
--bash-5.0# strace -cwf ./hello
-Hello world
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
- 60.51    0.002849        <span style="color:#ae81ff">2849</span>         <span style="color:#ae81ff">1</span>           execve
- 13.85    0.000652          <span style="color:#ae81ff">59</span>        <span style="color:#ae81ff">11</span>           mmap
-  7.59    0.000358          <span style="color:#ae81ff">71</span>         <span style="color:#ae81ff">5</span>           mprotect
-  4.23    0.000199         <span style="color:#ae81ff">199</span>         <span style="color:#ae81ff">1</span>           write
-  4.05    0.000191         <span style="color:#ae81ff">190</span>         <span style="color:#ae81ff">1</span>           open
-  2.45    0.000115          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
-  1.92    0.000091          <span style="color:#ae81ff">22</span>         <span style="color:#ae81ff">4</span>           brk
-  1.51    0.000071          <span style="color:#ae81ff">35</span>         <span style="color:#ae81ff">2</span>           readlink
-  1.12    0.000053          <span style="color:#ae81ff">52</span>         <span style="color:#ae81ff">1</span>           munmap
-  0.87    0.000041          <span style="color:#ae81ff">41</span>         <span style="color:#ae81ff">1</span>           close
-  0.51    0.000024          <span style="color:#ae81ff">23</span>         <span style="color:#ae81ff">1</span>           fstat
-  0.46    0.000022          <span style="color:#ae81ff">21</span>         <span style="color:#ae81ff">1</span>           ioctl
-  0.46    0.000022          <span style="color:#ae81ff">21</span>         <span style="color:#ae81ff">1</span>           uname
-  0.46    0.000022          <span style="color:#ae81ff">21</span>         <span style="color:#ae81ff">1</span>           arch_prctl
------- ----------- ----------- --------- --------- ----------------
-100.00    0.004709                    <span style="color:#ae81ff">37</span>           total
--bash-5.0#
-</code></pre></div><h2 id="nim-musl-static-avec-option-de-compilation-danger">Nim MUSL Static, avec option de compilation «danger»</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">bash-5.0# nim --passL:-static -d:release -d:danger --opt:size --app:console c hello.nim
-Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
-Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: io <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint: hello <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
-Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
-Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.198 sec total; 16MiB peakmem; Dangerous Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
--bash-5.0# strip -s hello
--bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">30232</span> Jan  <span style="color:#ae81ff">5</span> 16:21 hello
--bash-5.0# upx --best hello
-                       Ultimate Packer <span style="color:#66d9ef">for</span> eXecutables
-                          Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">1996</span> - <span style="color:#ae81ff">2018</span>
-UPX 3.95        Markus Oberhumer, Laszlo Molnar &amp; John Reiser   Aug 26th <span style="color:#ae81ff">2018</span>
-
-        File size         Ratio      Format      Name
-   --------------------   ------   -----------   -----------
-     <span style="color:#ae81ff">30232</span> -&gt;     <span style="color:#ae81ff">15092</span>   49.92%   linux/amd64   hello
-
-Packed <span style="color:#ae81ff">1</span> file.
--bash-5.0# ls -l hello
--rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">15092</span> Jan  <span style="color:#ae81ff">5</span> 16:21 hello
--bash-5.0# strace -cwf ./hello
-Hello world
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
- 69.00    0.003034        <span style="color:#ae81ff">3034</span>         <span style="color:#ae81ff">1</span>           execve
- 12.64    0.000556          <span style="color:#ae81ff">50</span>        <span style="color:#ae81ff">11</span>           mmap
-  4.86    0.000214         <span style="color:#ae81ff">214</span>         <span style="color:#ae81ff">1</span>           open
-  2.78    0.000122          <span style="color:#ae81ff">24</span>         <span style="color:#ae81ff">5</span>           mprotect
-  2.78    0.000122         <span style="color:#ae81ff">122</span>         <span style="color:#ae81ff">1</span>           writev
-  2.58    0.000114          <span style="color:#ae81ff">18</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
-  1.34    0.000060          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">3</span>           rt_sigprocmask
-  1.06    0.000046          <span style="color:#ae81ff">46</span>         <span style="color:#ae81ff">1</span>           close
-  1.00    0.000044          <span style="color:#ae81ff">44</span>         <span style="color:#ae81ff">1</span>           readlink
-  0.62    0.000028          <span style="color:#ae81ff">27</span>         <span style="color:#ae81ff">1</span>           munmap
-  0.46    0.000020          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">1</span>           arch_prctl
-  0.46    0.000020          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">1</span>           ioctl
-  0.40    0.000018          <span style="color:#ae81ff">17</span>         <span style="color:#ae81ff">1</span>           set_tid_address
------- ----------- ----------- --------- --------- ----------------
-100.00    0.004398                    <span style="color:#ae81ff">34</span>           total
--bash-5.0#
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# upx --best ./hello
+</span></span><span style="display:flex;"><span>                       Ultimate Packer <span style="color:#66d9ef">for</span> eXecutables
+</span></span><span style="display:flex;"><span>                          Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">1996</span> - <span style="color:#ae81ff">2018</span>
+</span></span><span style="display:flex;"><span>UPX 3.95        Markus Oberhumer, Laszlo Molnar &amp; John Reiser   Aug 26th <span style="color:#ae81ff">2018</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        File size         Ratio      Format      Name
+</span></span><span style="display:flex;"><span>   --------------------   ------   -----------   -----------
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">34328</span> -&gt;     <span style="color:#ae81ff">17832</span>   51.95%   linux/amd64   hello
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Packed <span style="color:#ae81ff">1</span> file.
+</span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">17832</span> Jan  <span style="color:#ae81ff">5</span> 11:31 hello
+</span></span><span style="display:flex;"><span>-bash-5.0# ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>% time     seconds  usecs/call     calls    errors syscall
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span> 65.78    0.002426        <span style="color:#ae81ff">2425</span>         <span style="color:#ae81ff">1</span>           execve
+</span></span><span style="display:flex;"><span> 10.80    0.000398          <span style="color:#ae81ff">36</span>        <span style="color:#ae81ff">11</span>           mmap
+</span></span><span style="display:flex;"><span>  5.82    0.000214         <span style="color:#ae81ff">214</span>         <span style="color:#ae81ff">1</span>           writev
+</span></span><span style="display:flex;"><span>  4.10    0.000152         <span style="color:#ae81ff">151</span>         <span style="color:#ae81ff">1</span>           open
+</span></span><span style="display:flex;"><span>  4.00    0.000148          <span style="color:#ae81ff">29</span>         <span style="color:#ae81ff">5</span>           mprotect
+</span></span><span style="display:flex;"><span>  3.00    0.000110          <span style="color:#ae81ff">18</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
+</span></span><span style="display:flex;"><span>  1.60    0.000058          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">3</span>           rt_sigprocmask
+</span></span><span style="display:flex;"><span>  1.60    0.000058          <span style="color:#ae81ff">58</span>         <span style="color:#ae81ff">1</span>           readlink
+</span></span><span style="display:flex;"><span>  1.00    0.000036          <span style="color:#ae81ff">36</span>         <span style="color:#ae81ff">1</span>           close
+</span></span><span style="display:flex;"><span>  0.74    0.000028          <span style="color:#ae81ff">27</span>         <span style="color:#ae81ff">1</span>           munmap
+</span></span><span style="display:flex;"><span>  0.54    0.000020          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">1</span>           ioctl
+</span></span><span style="display:flex;"><span>  0.54    0.000020          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">1</span>           arch_prctl
+</span></span><span style="display:flex;"><span>  0.48    0.000018          <span style="color:#ae81ff">17</span>         <span style="color:#ae81ff">1</span>           set_tid_address
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span>100.00    0.003688                    <span style="color:#ae81ff">34</span>           total
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><h2 id="nim-glibc-static">Nim GLIBC Static</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# upx --best hello
+</span></span><span style="display:flex;"><span>                       Ultimate Packer <span style="color:#66d9ef">for</span> eXecutables
+</span></span><span style="display:flex;"><span>                          Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">1996</span> - <span style="color:#ae81ff">2018</span>
+</span></span><span style="display:flex;"><span>UPX 3.95        Markus Oberhumer, Laszlo Molnar &amp; John Reiser   Aug 26th <span style="color:#ae81ff">2018</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        File size         Ratio      Format      Name
+</span></span><span style="display:flex;"><span>   --------------------   ------   -----------   -----------
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">713520</span> -&gt;    <span style="color:#ae81ff">280348</span>   39.29%   linux/amd64   hello
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Packed <span style="color:#ae81ff">1</span> file.
+</span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">280348</span> Jan  <span style="color:#ae81ff">5</span> 11:43 hello
+</span></span><span style="display:flex;"><span>-bash-5.0# ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>% time     seconds  usecs/call     calls    errors syscall
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span> 60.51    0.002849        <span style="color:#ae81ff">2849</span>         <span style="color:#ae81ff">1</span>           execve
+</span></span><span style="display:flex;"><span> 13.85    0.000652          <span style="color:#ae81ff">59</span>        <span style="color:#ae81ff">11</span>           mmap
+</span></span><span style="display:flex;"><span>  7.59    0.000358          <span style="color:#ae81ff">71</span>         <span style="color:#ae81ff">5</span>           mprotect
+</span></span><span style="display:flex;"><span>  4.23    0.000199         <span style="color:#ae81ff">199</span>         <span style="color:#ae81ff">1</span>           write
+</span></span><span style="display:flex;"><span>  4.05    0.000191         <span style="color:#ae81ff">190</span>         <span style="color:#ae81ff">1</span>           open
+</span></span><span style="display:flex;"><span>  2.45    0.000115          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
+</span></span><span style="display:flex;"><span>  1.92    0.000091          <span style="color:#ae81ff">22</span>         <span style="color:#ae81ff">4</span>           brk
+</span></span><span style="display:flex;"><span>  1.51    0.000071          <span style="color:#ae81ff">35</span>         <span style="color:#ae81ff">2</span>           readlink
+</span></span><span style="display:flex;"><span>  1.12    0.000053          <span style="color:#ae81ff">52</span>         <span style="color:#ae81ff">1</span>           munmap
+</span></span><span style="display:flex;"><span>  0.87    0.000041          <span style="color:#ae81ff">41</span>         <span style="color:#ae81ff">1</span>           close
+</span></span><span style="display:flex;"><span>  0.51    0.000024          <span style="color:#ae81ff">23</span>         <span style="color:#ae81ff">1</span>           fstat
+</span></span><span style="display:flex;"><span>  0.46    0.000022          <span style="color:#ae81ff">21</span>         <span style="color:#ae81ff">1</span>           ioctl
+</span></span><span style="display:flex;"><span>  0.46    0.000022          <span style="color:#ae81ff">21</span>         <span style="color:#ae81ff">1</span>           uname
+</span></span><span style="display:flex;"><span>  0.46    0.000022          <span style="color:#ae81ff">21</span>         <span style="color:#ae81ff">1</span>           arch_prctl
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span>100.00    0.004709                    <span style="color:#ae81ff">37</span>           total
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div><h2 id="nim-musl-static-avec-option-de-compilation-danger">Nim MUSL Static, avec option de compilation «danger»</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>bash-5.0# nim --passL:-static -d:release -d:danger --opt:size --app:console c hello.nim
+</span></span><span style="display:flex;"><span>Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: io <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: hello <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.198 sec total; 16MiB peakmem; Dangerous Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>-bash-5.0# strip -s hello
+</span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">30232</span> Jan  <span style="color:#ae81ff">5</span> 16:21 hello
+</span></span><span style="display:flex;"><span>-bash-5.0# upx --best hello
+</span></span><span style="display:flex;"><span>                       Ultimate Packer <span style="color:#66d9ef">for</span> eXecutables
+</span></span><span style="display:flex;"><span>                          Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">1996</span> - <span style="color:#ae81ff">2018</span>
+</span></span><span style="display:flex;"><span>UPX 3.95        Markus Oberhumer, Laszlo Molnar &amp; John Reiser   Aug 26th <span style="color:#ae81ff">2018</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        File size         Ratio      Format      Name
+</span></span><span style="display:flex;"><span>   --------------------   ------   -----------   -----------
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">30232</span> -&gt;     <span style="color:#ae81ff">15092</span>   49.92%   linux/amd64   hello
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Packed <span style="color:#ae81ff">1</span> file.
+</span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">15092</span> Jan  <span style="color:#ae81ff">5</span> 16:21 hello
+</span></span><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
+</span></span><span style="display:flex;"><span>Hello world
+</span></span><span style="display:flex;"><span>% time     seconds  usecs/call     calls    errors syscall
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span> 69.00    0.003034        <span style="color:#ae81ff">3034</span>         <span style="color:#ae81ff">1</span>           execve
+</span></span><span style="display:flex;"><span> 12.64    0.000556          <span style="color:#ae81ff">50</span>        <span style="color:#ae81ff">11</span>           mmap
+</span></span><span style="display:flex;"><span>  4.86    0.000214         <span style="color:#ae81ff">214</span>         <span style="color:#ae81ff">1</span>           open
+</span></span><span style="display:flex;"><span>  2.78    0.000122          <span style="color:#ae81ff">24</span>         <span style="color:#ae81ff">5</span>           mprotect
+</span></span><span style="display:flex;"><span>  2.78    0.000122         <span style="color:#ae81ff">122</span>         <span style="color:#ae81ff">1</span>           writev
+</span></span><span style="display:flex;"><span>  2.58    0.000114          <span style="color:#ae81ff">18</span>         <span style="color:#ae81ff">6</span>           rt_sigaction
+</span></span><span style="display:flex;"><span>  1.34    0.000060          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">3</span>           rt_sigprocmask
+</span></span><span style="display:flex;"><span>  1.06    0.000046          <span style="color:#ae81ff">46</span>         <span style="color:#ae81ff">1</span>           close
+</span></span><span style="display:flex;"><span>  1.00    0.000044          <span style="color:#ae81ff">44</span>         <span style="color:#ae81ff">1</span>           readlink
+</span></span><span style="display:flex;"><span>  0.62    0.000028          <span style="color:#ae81ff">27</span>         <span style="color:#ae81ff">1</span>           munmap
+</span></span><span style="display:flex;"><span>  0.46    0.000020          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">1</span>           arch_prctl
+</span></span><span style="display:flex;"><span>  0.46    0.000020          <span style="color:#ae81ff">19</span>         <span style="color:#ae81ff">1</span>           ioctl
+</span></span><span style="display:flex;"><span>  0.40    0.000018          <span style="color:#ae81ff">17</span>         <span style="color:#ae81ff">1</span>           set_tid_address
+</span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
+</span></span><span style="display:flex;"><span>100.00    0.004398                    <span style="color:#ae81ff">34</span>           total
+</span></span><span style="display:flex;"><span>-bash-5.0#
+</span></span></code></pre></div>
 
 
       </main>
@@ -586,7 +586,5 @@ Hello world
 
 
     
-  
-
   </body>
 </html>
