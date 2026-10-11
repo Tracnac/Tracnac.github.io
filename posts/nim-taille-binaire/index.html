@@ -4,7 +4,7 @@
   <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="generator" content="Hugo 0.148.0">
+  <meta name="generator" content="Hugo 0.167.0">
   
   
     
@@ -237,70 +237,70 @@ audio {
 <li>UPX 3.95 <a href="https://upx.github.io/">UPX</a></li>
 </ul>
 <p>Le code source en Nim est des plus simples :</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# cat hello.nim
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# cat hello.nim
 </span></span><span style="display:flex;"><span>echo<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello world&#34;</span><span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>-bash-5.0#
 </span></span></code></pre></div><table>
-  <thead>
-      <tr>
-          <th>Test case</th>
-          <th>Execution time</th>
-          <th>Total syscalls</th>
-          <th>Unique syscalls</th>
-          <th>Size (KiB)</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Nim (musl, static)</td>
-          <td>0.00s real</td>
-          <td>16</td>
-          <td>8</td>
-          <td>34.3 KiB</td>
-      </tr>
-      <tr>
-          <td>Nim (musl, dynamic)</td>
-          <td>0.00s real</td>
-          <td>18</td>
-          <td>9</td>
-          <td>30.6 KiB</td>
-      </tr>
-      <tr>
-          <td>Nim (glibc, static)</td>
-          <td>0.00s real</td>
-          <td>19</td>
-          <td>10</td>
-          <td>713.5 KiB</td>
-      </tr>
-      <tr>
-          <td>Nim (glibc, dynamic)</td>
-          <td>0.00s real</td>
-          <td>46</td>
-          <td>14</td>
-          <td>30.9 KiB</td>
-      </tr>
-      <tr>
-          <td>Nim (musl, static, upx)</td>
-          <td>0.00s real</td>
-          <td>34</td>
-          <td>13</td>
-          <td>17.8 KiB</td>
-      </tr>
-      <tr>
-          <td>Nim (glibc, static, upx)</td>
-          <td>0.00s real</td>
-          <td>37</td>
-          <td>14</td>
-          <td>280.3 KiB</td>
-      </tr>
-      <tr>
-          <td>Nim (musl, static, danger, upx)</td>
-          <td>0.00s real</td>
-          <td>34</td>
-          <td>13</td>
-          <td>15.0 KiB</td>
-      </tr>
-  </tbody>
+	<thead>
+			<tr>
+					<th>Test case</th>
+					<th>Execution time</th>
+					<th>Total syscalls</th>
+					<th>Unique syscalls</th>
+					<th>Size (KiB)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Nim (musl, static)</td>
+					<td>0.00s real</td>
+					<td>16</td>
+					<td>8</td>
+					<td>34.3 KiB</td>
+			</tr>
+			<tr>
+					<td>Nim (musl, dynamic)</td>
+					<td>0.00s real</td>
+					<td>18</td>
+					<td>9</td>
+					<td>30.6 KiB</td>
+			</tr>
+			<tr>
+					<td>Nim (glibc, static)</td>
+					<td>0.00s real</td>
+					<td>19</td>
+					<td>10</td>
+					<td>713.5 KiB</td>
+			</tr>
+			<tr>
+					<td>Nim (glibc, dynamic)</td>
+					<td>0.00s real</td>
+					<td>46</td>
+					<td>14</td>
+					<td>30.9 KiB</td>
+			</tr>
+			<tr>
+					<td>Nim (musl, static, upx)</td>
+					<td>0.00s real</td>
+					<td>34</td>
+					<td>13</td>
+					<td>17.8 KiB</td>
+			</tr>
+			<tr>
+					<td>Nim (glibc, static, upx)</td>
+					<td>0.00s real</td>
+					<td>37</td>
+					<td>14</td>
+					<td>280.3 KiB</td>
+			</tr>
+			<tr>
+					<td>Nim (musl, static, danger, upx)</td>
+					<td>0.00s real</td>
+					<td>34</td>
+					<td>13</td>
+					<td>15.0 KiB</td>
+			</tr>
+	</tbody>
 </table>
 <ul>
 <li><a href="#nim-taille-des-binaires">Nim taille des binaires</a>
@@ -321,7 +321,7 @@ audio {
 </li>
 </ul>
 <h1 id="nim---musl-statique">Nim - MUSL statique</h1>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim
 </span></span><span style="display:flex;"><span>Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
@@ -330,21 +330,21 @@ audio {
 </span></span><span style="display:flex;"><span>Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.200 sec total; 15.976MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
 </span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">54336</span> Jan  <span style="color:#ae81ff">5</span> 11:30 hello
 </span></span><span style="display:flex;"><span>-bash-5.0# strip -s ./hello
 </span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
 </span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">34328</span> Jan  <span style="color:#ae81ff">5</span> 11:31 hello
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
 </span></span><span style="display:flex;"><span>Hello world
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
 </span></span><span style="display:flex;"><span>hello: ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>54b23b1f1bb2ca9598c64a9a844de962ba22622b, stripped
 </span></span><span style="display:flex;"><span>-bash-5.0# ldd hello
 </span></span><span style="display:flex;"><span>ldd: hello: Not a valid dynamic program
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
 </span></span><span style="display:flex;"><span>Hello world
 </span></span><span style="display:flex;"><span>% time     seconds  usecs/call     calls    errors syscall
 </span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
@@ -360,10 +360,10 @@ audio {
 </span></span><span style="display:flex;"><span>100.00    0.003646                    <span style="color:#ae81ff">16</span>           total
 </span></span><span style="display:flex;"><span>-bash-5.0#
 </span></span></code></pre></div><h1 id="nim---musl-dynamique">Nim - MUSL dynamique</h1>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# cat hello.nim
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# cat hello.nim
 </span></span><span style="display:flex;"><span>echo<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello world&#34;</span><span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim -d:release --opt:size c hello.nim
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim -d:release --opt:size c hello.nim
 </span></span><span style="display:flex;"><span>Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
@@ -373,22 +373,22 @@ audio {
 </span></span><span style="display:flex;"><span>Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.250 sec total; 16.004MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
 </span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">47128</span> Jan  <span style="color:#ae81ff">5</span> 11:27 hello
 </span></span><span style="display:flex;"><span>-bash-5.0# strip -s hello
 </span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
 </span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">30696</span> Jan  <span style="color:#ae81ff">5</span> 11:27 hello
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
 </span></span><span style="display:flex;"><span>Hello world
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
 </span></span><span style="display:flex;"><span>hello: ELF 64-bit LSB pie executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>355f1d6a54526a182a0cd5cd7ebdd78399735eff, stripped
 </span></span><span style="display:flex;"><span>-bash-5.0# ldd ./hello
 </span></span><span style="display:flex;"><span>        /lib/ld-musl-x86_64.so.1 <span style="color:#f92672">(</span>0x7fe39a4f6000<span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>        libc.so <span style="color:#f92672">=</span>&gt; /lib/ld-musl-x86_64.so.1 <span style="color:#f92672">(</span>0x7fe39a4f6000<span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
 </span></span><span style="display:flex;"><span>Hello world
 </span></span><span style="display:flex;"><span>% time     seconds  usecs/call     calls    errors syscall
 </span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
@@ -405,7 +405,7 @@ audio {
 </span></span><span style="display:flex;"><span>100.00    0.003880                    <span style="color:#ae81ff">18</span>           total
 </span></span><span style="display:flex;"><span>-bash-5.0#
 </span></span></code></pre></div><h1 id="nim---glibc-statique">Nim - GLIBC statique</h1>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim
 </span></span><span style="display:flex;"><span>Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
@@ -414,21 +414,21 @@ audio {
 </span></span><span style="display:flex;"><span>Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.305 sec total; 16.008MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
 </span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">799336</span> Jan  <span style="color:#ae81ff">5</span> 11:43 hello
 </span></span><span style="display:flex;"><span>-bash-5.0# strip -s ./hello
 </span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
 </span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">713520</span> Jan  <span style="color:#ae81ff">5</span> 11:43 hello
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
 </span></span><span style="display:flex;"><span>Hello world
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
 </span></span><span style="display:flex;"><span>hello: ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>GNU/Linux<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>0c9833550755f7aaa7b3017ea3e9d90ca8d92f02, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
 </span></span><span style="display:flex;"><span>-bash-5.0# ldd hello
 </span></span><span style="display:flex;"><span>        not a dynamic executable
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
 </span></span><span style="display:flex;"><span>Hello world
 </span></span><span style="display:flex;"><span>% time     seconds  usecs/call     calls    errors syscall
 </span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
@@ -446,10 +446,10 @@ audio {
 </span></span><span style="display:flex;"><span>100.00    0.003739                    <span style="color:#ae81ff">19</span>           total
 </span></span><span style="display:flex;"><span>-bash-5.0#
 </span></span></code></pre></div><h1 id="nim---glibc-dynamique">Nim - GLIBC dynamique</h1>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# cat hello.nim
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# cat hello.nim
 </span></span><span style="display:flex;"><span>echo<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello world&#34;</span><span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim -d:release --opt:size c hello.nim
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# nim -d:release --opt:size c hello.nim
 </span></span><span style="display:flex;"><span>Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
@@ -461,13 +461,13 @@ audio {
 </span></span><span style="display:flex;"><span>Hint:  <span style="color:#f92672">[</span>Link<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: operation successful <span style="color:#f92672">(</span><span style="color:#ae81ff">14431</span> lines compiled; 0.895 sec total; 16.012MiB peakmem; Release Build<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>SuccessX<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ls -l hello
 </span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">45792</span> Jan  <span style="color:#ae81ff">5</span> 11:42 hello
 </span></span><span style="display:flex;"><span>-bash-5.0# strip -s hello
 </span></span><span style="display:flex;"><span>-bash-5.0# ls -l hello
 </span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">30952</span> Jan  <span style="color:#ae81ff">5</span> 11:42 hello
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# file hello
 </span></span><span style="display:flex;"><span>hello: ELF 64-bit LSB pie executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, dynamically linked, interpreter /lib/ld-linux-x86-64.so.2, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>bc75b867f4aaa8c9af58ee29430b098b03de475f, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
 </span></span><span style="display:flex;"><span>-bash-5.0#
 </span></span><span style="display:flex;"><span>-bash-5.0# ldd hello
@@ -476,10 +476,10 @@ audio {
 </span></span><span style="display:flex;"><span>        libc.so.6 <span style="color:#f92672">=</span>&gt; /usr/lib/libc.so.6 <span style="color:#f92672">(</span>0x00007fdf53a4d000<span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>        /lib/ld-linux-x86-64.so.2 <span style="color:#f92672">(</span>0x00007fdf53c41000<span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# ./hello
 </span></span><span style="display:flex;"><span>Hello world
 </span></span><span style="display:flex;"><span>-bash-5.0#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# strace -cwf ./hello
 </span></span><span style="display:flex;"><span>Hello world
 </span></span><span style="display:flex;"><span>% time     seconds  usecs/call     calls    errors syscall
 </span></span><span style="display:flex;"><span>------ ----------- ----------- --------- --------- ----------------
@@ -502,7 +502,7 @@ audio {
 </span></span><span style="display:flex;"><span>-bash-5.0#
 </span></span></code></pre></div><h1 id="upx">UPX</h1>
 <h2 id="nim-musl-statique">Nim MUSL statique</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# upx --best ./hello
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# upx --best ./hello
 </span></span><span style="display:flex;"><span>                       Ultimate Packer <span style="color:#66d9ef">for</span> eXecutables
 </span></span><span style="display:flex;"><span>                          Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">1996</span> - <span style="color:#ae81ff">2018</span>
 </span></span><span style="display:flex;"><span>UPX 3.95        Markus Oberhumer, Laszlo Molnar &amp; John Reiser   Aug 26th <span style="color:#ae81ff">2018</span>
@@ -537,7 +537,7 @@ audio {
 </span></span><span style="display:flex;"><span>100.00    0.003688                    <span style="color:#ae81ff">34</span>           total
 </span></span><span style="display:flex;"><span>-bash-5.0#
 </span></span></code></pre></div><h2 id="nim-glibc-statique">Nim GLIBC statique</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# upx --best hello
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>-bash-5.0# upx --best hello
 </span></span><span style="display:flex;"><span>                       Ultimate Packer <span style="color:#66d9ef">for</span> eXecutables
 </span></span><span style="display:flex;"><span>                          Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">1996</span> - <span style="color:#ae81ff">2018</span>
 </span></span><span style="display:flex;"><span>UPX 3.95        Markus Oberhumer, Laszlo Molnar &amp; John Reiser   Aug 26th <span style="color:#ae81ff">2018</span>
@@ -573,7 +573,7 @@ audio {
 </span></span><span style="display:flex;"><span>100.00    0.004709                    <span style="color:#ae81ff">37</span>           total
 </span></span><span style="display:flex;"><span>-bash-5.0#
 </span></span></code></pre></div><h2 id="nim-musl-statique-avec-loption-de-compilation--danger-">Nim MUSL statique, avec l&rsquo;option de compilation « danger »</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>bash-5.0# nim --passL:-static -d:release -d:danger --opt:size --app:console c hello.nim
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>bash-5.0# nim --passL:-static -d:release -d:danger --opt:size --app:console c hello.nim
 </span></span><span style="display:flex;"><span>Hint: used config file <span style="color:#e6db74">&#39;/usr/lib/nim/config/nim.cfg&#39;</span> <span style="color:#f92672">[</span>Conf<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: system <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>Hint: widestrs <span style="color:#f92672">[</span>Processing<span style="color:#f92672">]</span>
