@@ -38,7 +38,7 @@
     <meta property="article:modified_time" content="2020-03-16T20:31:04&#43;01:00">
   
   
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/vendor/bootstrap/bootstrap.min.css" />
   <style>
 .container {
   max-width: 800px;
@@ -46,6 +46,11 @@
 #nav a {
   font-weight: bold;
   color: inherit;
+}
+.icon-sm {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
 }
 #nav a.nav-link-active {
   background-color: #212529;
@@ -138,9 +143,9 @@ audio {
       
       
     
-    
-    
-    <a class="nav-link " href="/"><i data-feather="home"></i> Home</a>
+    <a class="nav-link " href="/">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sm me-1"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg> Home
+    </a>
   
     
     
@@ -156,9 +161,9 @@ audio {
         
       
     
-    
-    
-    <a class="nav-link nav-link-active" href="/posts/"><i data-feather="edit"></i> Posts</a>
+    <a class="nav-link nav-link-active" href="/posts/">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sm me-1"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Posts
+    </a>
   
     
     
@@ -172,9 +177,9 @@ audio {
       
       
     
-    
-    
-    <a class="nav-link " href="/tags/"><i data-feather="tag"></i> Tags</a>
+    <a class="nav-link " href="/tags/">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sm me-1"><path d="m20.59 13.41-7.17 7.17a2 2 0 0 1-2.83 0L2 12V4h8l10.59 10.59a2 2 0 0 1 0 2.82Z"/><path d="M7 7h.01"/></svg> Tags
+    </a>
   
     
     
@@ -188,9 +193,9 @@ audio {
       
       
     
-    
-    
-    <a class="nav-link " href="/about/"><i data-feather="smile"></i> A propos</a>
+    <a class="nav-link " href="/about/">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sm me-1"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg> A propos
+    </a>
   
     
     
@@ -204,9 +209,9 @@ audio {
       
       
     
-    
-    
-    <a class="nav-link " href="/index.xml"><i data-feather="rss"></i> Flux RSS</a>
+    <a class="nav-link " href="/index.xml">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sm me-1"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg> Flux RSS
+    </a>
   
   </nav>
 </div>
@@ -623,19 +628,11 @@ audio {
   </div>
 </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js" integrity="sha512-24XP4a9KVoIinPFUbcnjIjAjtS59PUoxQj3GNVpWc86bCqPuy3YxAcxJrxFCxXe4GHtAumCbO2Ze2bddtuxaRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script>
-  feather.replace()
-</script>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha512-3dZ9wIrMMij8rOH7X3kLfXAzwtcHpuYpEgQg1OA4QAob1e81H8ntUQmQm3pBudqIoySO5j0tHN4ENzA6+n2r4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+<script src="/vendor/bootstrap/bootstrap.min.js"></script>
 
 
     
 
-
-
-    
   </body>
 </html>
