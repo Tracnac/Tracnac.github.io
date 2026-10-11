@@ -6,15 +6,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="generator" content="Hugo 0.148.0">
   
-  <meta name="description" content="Introduction La curiosité m’a piqué après la lecture de ce post : Hello world
-Du coup j’apporte ma contribution avec le language Nim
-Tous les tests sont effectués sous :
-VoidLinux VoidLinux MUSL 1.1.24 GLIBC 2.30 GCC 9.2.0 GNU GCC Nim 1.0.4 Nim UPX 3.95 UPX Le code source en Nim est des plus simples :
--bash-5.0# cat hello.nim echo(&#34;Hello world&#34;) -bash-5.0# Test case Execution time Total syscalls Unique syscalls Size (KiB) Nim (musl, static) 0.00s real 16 8 34.3 KiB Nim (musl, dynamic) 0.00s real 18 9 30.6 KiB Nim (glibc, static) 0.00s real 19 10 713.5 KiB Nim (glibc, dynamic) 0.00s real 46 14 30.9 KiB Nim (musl, static, upx) 0.00s real 34 13 17.8 KiB Nim (glibc, static, upx) 0.00s real 37 14 280.3 KiB Nim (musl, static, danger, upx) 0.00s real 34 13 15.0 KiB Nim taille des binaires Introduction Nim - MUSL statique Nim - MUSL dynamique Nim - GLIBC statique Nim - GLIBC dynamique UPX Nim MUSL statique Nim GLIBC statique Nim MUSL statique, avec l’option de compilation « danger » Nim - MUSL statique -bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim Hint: used config file &#39;/usr/lib/nim/config/nim.cfg&#39; [Conf] Hint: system [Processing] Hint: widestrs [Processing] Hint: io [Processing] Hint: hello [Processing] Hint: [Link] Hint: operation successful (14431 lines compiled; 0.200 sec total; 15.976MiB peakmem; Release Build) [SuccessX] -bash-5.0# -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 54336 Jan 5 11:30 hello -bash-5.0# strip -s ./hello -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 34328 Jan 5 11:31 hello -bash-5.0# -bash-5.0# ./hello Hello world -bash-5.0# -bash-5.0# file hello hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=54b23b1f1bb2ca9598c64a9a844de962ba22622b, stripped -bash-5.0# ldd hello ldd: hello: Not a valid dynamic program -bash-5.0# -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 80.42 0.002932 2931 1 execve 6.26 0.000228 228 1 writev 3.12 0.000114 18 6 rt_sigaction 3.10 0.000114 56 2 mmap 2.46 0.000090 90 1 arch_prctl 2.42 0.000088 88 1 set_tid_address 1.64 0.000060 19 3 rt_sigprocmask 0.56 0.000020 20 1 ioctl ------ ----------- ----------- --------- --------- ---------------- 100.00 0.003646 16 total -bash-5.0# Nim - MUSL dynamique -bash-5.0# cat hello.nim echo(&#34;Hello world&#34;) -bash-5.0# -bash-5.0# nim -d:release --opt:size c hello.nim Hint: used config file &#39;/usr/lib/nim/config/nim.cfg&#39; [Conf] Hint: system [Processing] Hint: widestrs [Processing] Hint: io [Processing] Hint: hello [Processing] CC: hello.nim Hint: [Link] Hint: operation successful (14431 lines compiled; 0.250 sec total; 16.004MiB peakmem; Release Build) [SuccessX] -bash-5.0# -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 47128 Jan 5 11:27 hello -bash-5.0# strip -s hello -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 30696 Jan 5 11:27 hello -bash-5.0# -bash-5.0# ./hello Hello world -bash-5.0# -bash-5.0# file hello hello: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, BuildID[sha1]=355f1d6a54526a182a0cd5cd7ebdd78399735eff, stripped -bash-5.0# ldd ./hello /lib/ld-musl-x86_64.so.1 (0x7fe39a4f6000) libc.so =&gt; /lib/ld-musl-x86_64.so.1 (0x7fe39a4f6000) -bash-5.0# -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 79.66 0.003090 3090 1 execve 5.64 0.000218 218 1 writev 3.66 0.000142 70 2 mprotect 3.04 0.000118 19 6 rt_sigaction 2.34 0.000090 90 1 set_tid_address 2.34 0.000090 90 1 arch_prctl 1.52 0.000060 19 3 rt_sigprocmask 1.30 0.000050 25 2 mmap 0.52 0.000020 20 1 ioctl ------ ----------- ----------- --------- --------- ---------------- 100.00 0.003880 18 total -bash-5.0# Nim - GLIBC statique -bash-5.0# nim --passL:-static -d:release --opt:size c hello.nim Hint: used config file &#39;/usr/lib/nim/config/nim.cfg&#39; [Conf] Hint: system [Processing] Hint: widestrs [Processing] Hint: io [Processing] Hint: hello [Processing] Hint: [Link] Hint: operation successful (14431 lines compiled; 0.305 sec total; 16.008MiB peakmem; Release Build) [SuccessX] -bash-5.0# -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 799336 Jan 5 11:43 hello -bash-5.0# strip -s ./hello -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 713520 Jan 5 11:43 hello -bash-5.0# -bash-5.0# ./hello Hello world -bash-5.0# -bash-5.0# file hello hello: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=0c9833550755f7aaa7b3017ea3e9d90ca8d92f02, for GNU/Linux 3.2.0, stripped -bash-5.0# ldd hello not a dynamic executable -bash-5.0# -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 76.70 0.002868 2867 1 execve 7.79 0.000291 72 4 brk 5.82 0.000218 217 1 write 3.33 0.000124 20 6 rt_sigaction 2.47 0.000092 92 1 readlink 1.25 0.000047 23 2 mmap 0.83 0.000031 30 1 fstat 0.62 0.000023 23 1 uname 0.62 0.000023 23 1 arch_prctl 0.58 0.000022 21 1 ioctl ------ ----------- ----------- --------- --------- ---------------- 100.00 0.003739 19 total -bash-5.0# Nim - GLIBC dynamique -bash-5.0# cat hello.nim echo(&#34;Hello world&#34;) -bash-5.0# -bash-5.0# nim -d:release --opt:size c hello.nim Hint: used config file &#39;/usr/lib/nim/config/nim.cfg&#39; [Conf] Hint: system [Processing] Hint: widestrs [Processing] Hint: io [Processing] Hint: hello [Processing] CC: stdlib_io.nim CC: stdlib_system.nim CC: hello.nim Hint: [Link] Hint: operation successful (14431 lines compiled; 0.895 sec total; 16.012MiB peakmem; Release Build) [SuccessX] -bash-5.0# -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 45792 Jan 5 11:42 hello -bash-5.0# strip -s hello -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 30952 Jan 5 11:42 hello -bash-5.0# -bash-5.0# file hello hello: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-x86-64.so.2, BuildID[sha1]=bc75b867f4aaa8c9af58ee29430b098b03de475f, for GNU/Linux 3.2.0, stripped -bash-5.0# -bash-5.0# ldd hello linux-vdso.so.1 (0x00007fffea4eb000) libdl.so.2 =&gt; /usr/lib/libdl.so.2 (0x00007fdf53c1b000) libc.so.6 =&gt; /usr/lib/libc.so.6 (0x00007fdf53a4d000) /lib/ld-linux-x86-64.so.2 (0x00007fdf53c41000) -bash-5.0# -bash-5.0# ./hello Hello world -bash-5.0# -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 61.30 0.003148 3148 1 execve 11.61 0.000596 42 14 mmap 6.70 0.000344 114 3 openat 3.99 0.000205 204 1 write 3.10 0.000159 159 1 1 access 2.59 0.000133 44 3 brk 2.20 0.000113 22 5 mprotect 2.14 0.000110 18 6 rt_sigaction 1.81 0.000093 23 4 fstat 1.77 0.000091 30 3 close 1.23 0.000063 31 2 read 0.82 0.000042 42 1 munmap 0.39 0.000020 19 1 ioctl 0.35 0.000018 18 1 arch_prctl ------ ----------- ----------- --------- --------- ---------------- 100.00 0.005136 46 1 total -bash-5.0# UPX Nim MUSL statique -bash-5.0# upx --best ./hello Ultimate Packer for eXecutables Copyright (C) 1996 - 2018 UPX 3.95 Markus Oberhumer, Laszlo Molnar &amp; John Reiser Aug 26th 2018 File size Ratio Format Name -------------------- ------ ----------- ----------- 34328 -&gt; 17832 51.95% linux/amd64 hello Packed 1 file. -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 17832 Jan 5 11:31 hello -bash-5.0# ./hello Hello world -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 65.78 0.002426 2425 1 execve 10.80 0.000398 36 11 mmap 5.82 0.000214 214 1 writev 4.10 0.000152 151 1 open 4.00 0.000148 29 5 mprotect 3.00 0.000110 18 6 rt_sigaction 1.60 0.000058 19 3 rt_sigprocmask 1.60 0.000058 58 1 readlink 1.00 0.000036 36 1 close 0.74 0.000028 27 1 munmap 0.54 0.000020 19 1 ioctl 0.54 0.000020 19 1 arch_prctl 0.48 0.000018 17 1 set_tid_address ------ ----------- ----------- --------- --------- ---------------- 100.00 0.003688 34 total -bash-5.0# Nim GLIBC statique -bash-5.0# upx --best hello Ultimate Packer for eXecutables Copyright (C) 1996 - 2018 UPX 3.95 Markus Oberhumer, Laszlo Molnar &amp; John Reiser Aug 26th 2018 File size Ratio Format Name -------------------- ------ ----------- ----------- 713520 -&gt; 280348 39.29% linux/amd64 hello Packed 1 file. -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 280348 Jan 5 11:43 hello -bash-5.0# ./hello Hello world -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 60.51 0.002849 2849 1 execve 13.85 0.000652 59 11 mmap 7.59 0.000358 71 5 mprotect 4.23 0.000199 199 1 write 4.05 0.000191 190 1 open 2.45 0.000115 19 6 rt_sigaction 1.92 0.000091 22 4 brk 1.51 0.000071 35 2 readlink 1.12 0.000053 52 1 munmap 0.87 0.000041 41 1 close 0.51 0.000024 23 1 fstat 0.46 0.000022 21 1 ioctl 0.46 0.000022 21 1 uname 0.46 0.000022 21 1 arch_prctl ------ ----------- ----------- --------- --------- ---------------- 100.00 0.004709 37 total -bash-5.0# Nim MUSL statique, avec l’option de compilation « danger » bash-5.0# nim --passL:-static -d:release -d:danger --opt:size --app:console c hello.nim Hint: used config file &#39;/usr/lib/nim/config/nim.cfg&#39; [Conf] Hint: system [Processing] Hint: widestrs [Processing] Hint: io [Processing] Hint: hello [Processing] Hint: [Link] Hint: operation successful (14431 lines compiled; 0.198 sec total; 16MiB peakmem; Dangerous Release Build) [SuccessX] -bash-5.0# strip -s hello -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 30232 Jan 5 16:21 hello -bash-5.0# upx --best hello Ultimate Packer for eXecutables Copyright (C) 1996 - 2018 UPX 3.95 Markus Oberhumer, Laszlo Molnar &amp; John Reiser Aug 26th 2018 File size Ratio Format Name -------------------- ------ ----------- ----------- 30232 -&gt; 15092 49.92% linux/amd64 hello Packed 1 file. -bash-5.0# ls -l hello -rwxr-xr-x 1 root root 15092 Jan 5 16:21 hello -bash-5.0# strace -cwf ./hello Hello world % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 69.00 0.003034 3034 1 execve 12.64 0.000556 50 11 mmap 4.86 0.000214 214 1 open 2.78 0.000122 24 5 mprotect 2.78 0.000122 122 1 writev 2.58 0.000114 18 6 rt_sigaction 1.34 0.000060 19 3 rt_sigprocmask 1.06 0.000046 46 1 close 1.00 0.000044 44 1 readlink 0.62 0.000028 27 1 munmap 0.46 0.000020 19 1 arch_prctl 0.46 0.000020 19 1 ioctl 0.40 0.000018 17 1 set_tid_address ------ ----------- ----------- --------- --------- ---------------- 100.00 0.004398 34 total -bash-5.0# ">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   
+    
+  
+  
+  
+  
+  
+  
+    
   
   <title>Nim taille des binaires | Devmobs.fr</title>
+  <meta name="description" content="Introduction La curiosité m’a piqué après la lecture de ce post : Hello world Du coup j’apporte ma contribution avec le language Nim Tous les tests sont …">
+  <link rel="canonical" href="https://tracnac.github.io/posts/nim-taille-binaire/">
+  <meta name="robots" content="index,follow">
+  <meta property="og:site_name" content="Devmobs.fr">
+  <meta property="og:title" content="Nim taille des binaires | Devmobs.fr">
+  <meta property="og:description" content="Introduction La curiosité m’a piqué après la lecture de ce post : Hello world Du coup j’apporte ma contribution avec le language Nim Tous les tests sont …">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://tracnac.github.io/posts/nim-taille-binaire/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Nim taille des binaires | Devmobs.fr">
+  <meta name="twitter:description" content="Introduction La curiosité m’a piqué après la lecture de ce post : Hello world Du coup j’apporte ma contribution avec le language Nim Tous les tests sont …">
+  
+    <meta name="keywords" content="nim, debug, memory">
+  
+  
+    <meta property="article:published_time" content="2020-03-16T20:31:04&#43;01:00">
+  
+  
+    <meta property="article:modified_time" content="2020-03-16T20:31:04&#43;01:00">
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
 .container {
   max-width: 800px;
@@ -36,6 +60,7 @@ VoidLinux VoidLinux MUSL 1.1.24 GLIBC 2.30 GCC 9.2.0 GNU GCC Nim 1.0.4 Nim UPX 3
 }
 #home-jumbotron {
   background-color: inherit;
+  padding: 2rem 1rem;
 }
 #footer .container {
   padding: 1em 0;
@@ -77,6 +102,16 @@ video,
 audio {
   max-width: 100%;
 }
+.post-list-item p:last-child {
+  margin-bottom: 0;
+}
+.pagination .page-link {
+  color: #212529;
+}
+.pagination .page-item.active .page-link {
+  background-color: #212529;
+  border-color: #212529;
+}
 .card-img,
 .card-img-top,
 .card-img-bottom {
@@ -87,7 +122,7 @@ audio {
 
   <body class="d-flex flex-column h-100">
     <div id="nav-border" class="container">
-  <nav id="nav" class="nav justify-content-center">
+  <nav id="nav" class="nav justify-content-center" aria-label="Primary navigation">
   
   
   
@@ -98,8 +133,11 @@ audio {
       
       
       
-        
       
+      
+      
+      
+    
     
     
     <a class="nav-link " href="/"><i data-feather="home"></i> Home</a>
@@ -111,11 +149,16 @@ audio {
       
       
       
+      
+      
+      
+      
         
       
     
     
-    <a class="nav-link " href="/posts/"><i data-feather="edit"></i> Posts</a>
+    
+    <a class="nav-link nav-link-active" href="/posts/"><i data-feather="edit"></i> Posts</a>
   
     
     
@@ -124,8 +167,11 @@ audio {
       
       
       
-        
       
+      
+      
+      
+    
     
     
     <a class="nav-link " href="/tags/"><i data-feather="tag"></i> Tags</a>
@@ -137,8 +183,11 @@ audio {
       
       
       
-        
       
+      
+      
+      
+    
     
     
     <a class="nav-link " href="/about/"><i data-feather="smile"></i> A propos</a>
@@ -150,8 +199,11 @@ audio {
       
       
       
-        
       
+      
+      
+      
+    
     
     
     <a class="nav-link " href="/index.xml"><i data-feather="rss"></i> Flux RSS</a>
@@ -577,7 +629,6 @@ audio {
 </script>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha512-3dZ9wIrMMij8rOH7X3kLfXAzwtcHpuYpEgQg1OA4QAob1e81H8ntUQmQm3pBudqIoySO5j0tHN4ENzA6+n2r4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
