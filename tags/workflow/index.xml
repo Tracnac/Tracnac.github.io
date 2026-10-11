@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Workflow on Devmobs.fr</title>
+    <link>https://tracnac.github.io/tags/workflow/</link>
+    <description>Recent content in Workflow on Devmobs.fr</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 10 Oct 2026 12:00:00 +0200</lastBuildDate>
+    <atom:link href="https://tracnac.github.io/tags/workflow/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Test du workflow GitHub</title>
+      <link>https://tracnac.github.io/posts/test-github-workflow/</link>
+      <pubDate>Sat, 10 Oct 2026 12:00:00 +0200</pubDate>
+      <guid>https://tracnac.github.io/posts/test-github-workflow/</guid>
+      <description>&lt;p&gt;Ceci est un petit article de test pour vérifier le déploiement automatique du site &lt;strong&gt;devmobs.fr&lt;/strong&gt; via GitHub Actions.&lt;/p&gt;&#xA;&lt;p&gt;Si cette page est publiée correctement, le workflow fonctionne comme prévu.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
