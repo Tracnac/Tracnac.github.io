@@ -10,7 +10,7 @@
 		
 		
 		
-			<lastBuildDate>Fri, 09 Jun 2023 00:00:00 +0000</lastBuildDate>
+			<lastBuildDate>Tue, 24 Nov 2026 08:50:00 +0100</lastBuildDate>
 		
 			<atom:link href="https://tracnac.github.io/index.xml" rel="self" type="application/rss+xml" />
 			<item>
@@ -19,6 +19,13 @@
 				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
 				<guid>https://tracnac.github.io/tools/opcode-composer/</guid>
 				<description>&lt;p&gt;Composeur interactif d’opcodes : définissez les champs d’instruction, encodez et décodez des mots, puis exportez la documentation.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Concevoir un jeu d’instructions RISC 32 bits pour FPGA</title>
+				<link>https://tracnac.github.io/posts/jeu-instructions-risc-s32-fpga/</link>
+				<pubDate>Tue, 24 Nov 2026 08:50:00 +0100</pubDate>
+				<guid>https://tracnac.github.io/posts/jeu-instructions-risc-s32-fpga/</guid>
+				<description>&lt;p&gt;Je travaille sur &lt;strong&gt;RISC S32&lt;/strong&gt;, un cœur de processeur RISC destiné à être implémenté sur FPGA. Une étape importante de sa conception consiste à définir son jeu d’instructions (ISA) : les opérations disponibles, les registres et la représentation binaire de chaque instruction.&lt;/p&gt;&#xA;&lt;h2 id=&#34;un-format-commun-plusieurs-types-dinstructions&#34;&gt;Un format commun, plusieurs types d’instructions&lt;/h2&gt;&#xA;&lt;p&gt;Les instructions ont une largeur fixe de &lt;strong&gt;32 bits&lt;/strong&gt; et sont alignées sur des adresses multiples de quatre octets. L’encodage est big-endian. Selon le type d’opération, les champs décrivent notamment la condition d’exécution, l’opcode, les registres concernés ou une valeur immédiate. Les accès mémoire et les branchements disposent également de champs de déplacement adaptés.&lt;/p&gt;</description>
 			</item>
 			<item>
 				<title>About</title>
