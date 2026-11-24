@@ -1,0 +1,4403 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Opcode composer</title>
+    <style>
+      :root {
+        font-family: system-ui, sans-serif;
+        font-size: 14px;
+        color: #222;
+        background: #f4f5f7;
+      }
+      body {
+        margin: 0;
+      }
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: center;
+        padding: 10px 16px;
+        background: #24323f;
+        color: #fff;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 18px;
+        margin-right: auto;
+      }
+      header input {
+        width: 60px;
+      }
+      #saveStatus {
+        font-size: 12px;
+        color: #b9c6d3;
+      }
+      #saveStatus.bad {
+        color: #ffb4b4;
+      }
+      main {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        gap: 16px;
+        padding: 16px;
+        align-items: start;
+      }
+      .col {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        min-width: 0;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #d5d9de;
+        border-radius: 6px;
+        padding: 12px 16px;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 0 0 10px;
+      }
+      h3 {
+        font-size: 14px;
+        margin: 14px 0 4px;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      input,
+      select,
+      button,
+      textarea {
+        font: inherit;
+      }
+      input {
+        padding: 2px 5px;
+      }
+      input.narrow {
+        width: 60px;
+      }
+      input.code {
+        width: 80px;
+        font-family: monospace;
+      }
+      input.bulk {
+        flex: 1;
+        min-width: 180px;
+      }
+      button {
+        cursor: pointer;
+        padding: 3px 9px;
+      }
+      button.mini {
+        padding: 0 6px;
+      }
+      .muted {
+        color: #777;
+      }
+      .small {
+        font-size: 12px;
+      }
+      .error {
+        color: #b00020;
+      }
+      .warning {
+        color: #9a6200;
+      }
+      .hint {
+        font-size: 12px;
+        color: #666;
+        margin: 0 0 8px;
+      }
+      ul.msgs {
+        margin: 6px 0;
+        padding-left: 18px;
+      }
+      code,
+      .mono {
+        font-family: monospace;
+      }
+      .result div {
+        margin: 4px 0;
+      }
+      .result code {
+        background: #f0f2f5;
+        padding: 1px 5px;
+        border-radius: 3px;
+      }
+
+      .kind {
+        font-size: 11px;
+        padding: 0 5px;
+        border-radius: 3px;
+        border: 1px solid #aab;
+        color: #345;
+        background: #eef1f5;
+      }
+      .kind.list {
+        background: #e3efff;
+      }
+      .kind.number {
+        background: #fff1dc;
+      }
+      .kind.const {
+        background: #e8f6e8;
+      }
+
+      #palette {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      #palette li.block {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 6px;
+        border: 1px solid #ccd;
+        border-radius: 4px;
+        background: #fff;
+        cursor: grab;
+      }
+      #palette li.block.selected {
+        background: #dbe9ff;
+        border-color: #6c9bd9;
+      }
+      #palette li.block.drop-before {
+        box-shadow: 0 -4px 0 #4a7fd0;
+      }
+      #palette.drop-end::after {
+        content: "";
+        height: 4px;
+        background: #4a7fd0;
+      }
+      #palette li.block .bname {
+        font-weight: 600;
+      }
+      #palette li.block .add {
+        margin-left: auto;
+      }
+
+      #paddingTemplate {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 42px;
+        margin-bottom: 14px;
+        padding: 6px 7px;
+        border: 1px solid #c9e6d0;
+        border-radius: 7px;
+        background: #d6f5d6;
+        cursor: grab;
+      }
+
+      #paddingTemplate strong {
+        flex: 1;
+        color: #24334b;
+        font-size: 12px;
+      }
+
+      table.items {
+        border-collapse: collapse;
+        margin-bottom: 8px;
+      }
+      table.items th,
+      table.items td {
+        padding: 2px 5px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+      }
+      table.items td.bin {
+        font-family: monospace;
+        white-space: nowrap;
+      }
+
+      #mnemonicList {
+        list-style: none;
+        margin: 0 0 10px;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      button.mn {
+        background: #fff;
+        border: 1px solid #ccd;
+        border-radius: 4px;
+      }
+      button.mn.selected {
+        background: #dbe9ff;
+        border-color: #6c9bd9;
+        font-weight: 600;
+      }
+      button.mn.over {
+        outline: 2px solid #4a7fd0;
+      }
+
+      #slotZone {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-height: 44px;
+        border: 2px dashed #b8c2cc;
+        border-radius: 6px;
+        padding: 8px;
+        margin-bottom: 8px;
+      }
+      #slotZone.over {
+        border-color: #4a7fd0;
+        background: #f2f7ff;
+      }
+      #slotZone.drop-end::after {
+        content: "";
+        width: 4px;
+        background: #4a7fd0;
+        border-radius: 2px;
+      }
+      .chip {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 6px;
+        border: 1px solid #8a99a8;
+        border-radius: 4px;
+      }
+      .chip.drop-before {
+        box-shadow: -5px 0 0 #4a7fd0;
+      }
+      .chip .handle {
+        cursor: grab;
+        font-size: 16px;
+        padding: 0 2px;
+        user-select: none;
+      }
+      .chip input.slabel {
+        width: 70px;
+      }
+
+      .diagram {
+        overflow-x: auto;
+        margin: 8px 0;
+      }
+      table.bits {
+        border-collapse: collapse;
+        font-family: monospace;
+        font-size: 12px;
+      }
+      table.bits th {
+        font-weight: normal;
+        color: #666;
+        min-width: 18px;
+        padding: 1px 2px;
+        text-align: center;
+      }
+      table.bits td {
+        border: 1px solid #9aa;
+        padding: 2px 3px;
+        text-align: center;
+        white-space: nowrap;
+      }
+      table.bits td.start {
+        border-left: 2px solid #333;
+      }
+      table.bits td.sub {
+        font-size: 11px;
+        color: #444;
+      }
+      table.bits td.fixed {
+        font-weight: 700;
+      }
+      table.bits td.free {
+        color: #888;
+        font-style: italic;
+      }
+      table.bits td.bad {
+        outline: 2px solid #b00020;
+        outline-offset: -2px;
+        color: #b00020;
+      }
+
+      #encInputs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+      }
+      .encVariant {
+        box-sizing: border-box;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 8px 16px;
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #d5d9de;
+        border-radius: 4px;
+        background: #fafbfc;
+      }
+      .encVariant > strong {
+        width: 100%;
+      }
+      .encReferenceRow {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        width: 100%;
+      }
+      .encReferenceRow label.encReference {
+        flex: 1;
+        min-width: 0;
+        width: auto;
+      }
+      .encReferenceRow label.encReference input {
+        width: 100%;
+        max-width: 420px;
+      }
+      label.encField {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        font-size: 12px;
+      }
+      label.encField input,
+      label.encField select {
+        width: 150px;
+      }
+      label.encReference {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        width: 100%;
+        font-size: 12px;
+      }
+      label.encReference input {
+        box-sizing: border-box;
+        width: min(100%, 420px);
+        font-family: monospace;
+      }
+      #decInput {
+        width: 260px;
+        font-family: monospace;
+      }
+      #mdOutput {
+        width: 100%;
+        box-sizing: border-box;
+        font-family: monospace;
+        font-size: 12px;
+        margin-top: 8px;
+      }
+      textarea.docDescription {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 56px;
+      }
+      #docTitle {
+        width: min(100%, 360px);
+      }
+      label.docIntroField {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+        margin-top: 8px;
+      }
+      #docIntro {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 80px;
+      }
+
+      :root {
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        font-size: 14px;
+        color: #172033;
+        background: #f3f6fb;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        --ink: #172033;
+        --muted: #64748b;
+        --line: #dce3ed;
+        --surface: #fff;
+        --surface-soft: #f8fafd;
+        --accent: #3156a6;
+        --accent-strong: #24458d;
+        --focus: #7aa7ff;
+        --shadow: 0 2px 8px rgb(25 42 70 / 5%), 0 14px 34px rgb(25 42 70 / 4%);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        color: var(--ink);
+        background:
+          radial-gradient(ellipse at 50% -20%, #e8eefb 0, transparent 48%),
+          #f3f6fb;
+        line-height: 1.45;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        min-height: 68px;
+        gap: 12px 18px;
+        padding: 12px clamp(16px, 3vw, 36px);
+        background: #17243a;
+        box-shadow: 0 4px 18px rgb(15 23 42 / 16%);
+      }
+
+      header h1 {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: #f8faff;
+        font-size: 19px;
+        font-weight: 680;
+        letter-spacing: -0.025em;
+      }
+
+      header h1::before {
+        width: 10px;
+        height: 24px;
+        border-radius: 5px;
+        background: linear-gradient(180deg, #8cb4ff, #4e79d3);
+        content: "";
+      }
+
+      header label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #d6deeb;
+        font-size: 13px;
+        font-weight: 550;
+      }
+
+      header input {
+        width: 72px;
+        min-height: 34px;
+        border-color: #506078;
+        background: #fff;
+        color: var(--ink);
+      }
+
+      #saveStatus {
+        color: #c0cddd;
+        font-size: 12px;
+      }
+
+      #saveStatus:not(.bad)::before {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        margin-right: 7px;
+        border-radius: 50%;
+        background: #58c796;
+        content: "";
+      }
+
+      main {
+        grid-template-columns: minmax(300px, 350px) minmax(0, 1fr);
+        gap: 20px;
+        width: min(100%, 1880px);
+        margin: 0 auto;
+        padding: 22px clamp(14px, 2.4vw, 32px) 40px;
+      }
+
+      .col {
+        gap: 20px;
+      }
+
+      .card {
+        min-width: 0;
+        padding: 20px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      h2 {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0 0 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #e8edf4;
+        color: #1b2940;
+        font-size: 16px;
+        font-weight: 680;
+        letter-spacing: -0.015em;
+      }
+
+      h3 {
+        color: #34445e;
+        font-size: 14px;
+        font-weight: 650;
+      }
+
+      .row {
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      input,
+      select,
+      textarea {
+        min-width: 0;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #fff;
+        color: #172033;
+        transition:
+          border-color 120ms ease,
+          box-shadow 120ms ease,
+          background-color 120ms ease;
+      }
+
+      input:not([type="checkbox"]),
+      select {
+        min-height: 36px;
+        padding: 6px 9px;
+      }
+
+      textarea {
+        padding: 9px 10px;
+        line-height: 1.5;
+        resize: vertical;
+      }
+
+      input:hover,
+      select:hover,
+      textarea:hover {
+        border-color: #9eacc0;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgb(49 86 166 / 14%);
+      }
+
+      input[type="checkbox"] {
+        accent-color: var(--accent);
+      }
+
+      button {
+        min-height: 34px;
+        padding: 6px 11px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #fff;
+        color: #263650;
+        font-size: 13px;
+        font-weight: 570;
+        line-height: 1.2;
+        transition:
+          color 120ms ease,
+          border-color 120ms ease,
+          background-color 120ms ease,
+          box-shadow 120ms ease,
+          transform 80ms ease;
+      }
+
+      button:hover:not(:disabled) {
+        border-color: #91a2bc;
+        background: #f6f8fc;
+        color: #14294d;
+      }
+
+      button:active:not(:disabled) {
+        transform: translateY(1px);
+      }
+
+      button:focus-visible {
+        outline: 3px solid rgb(122 167 255 / 65%);
+        outline-offset: 2px;
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.48;
+      }
+
+      header button {
+        border-color: #53627a;
+        background: #263852;
+        color: #f2f6fc;
+      }
+
+      header button:hover:not(:disabled) {
+        border-color: #8ca4ca;
+        background: #344968;
+        color: #fff;
+      }
+
+      #saveProject {
+        border-color: #6d8fd2;
+        background: #4269b7;
+        color: #fff;
+      }
+
+      #saveProject:hover:not(:disabled) {
+        border-color: #91ade3;
+        background: #5079c8;
+        color: #fff;
+      }
+
+      #resetAll {
+        color: #ffd8d8;
+      }
+
+      button.mini {
+        min-width: 30px;
+        min-height: 30px;
+        padding: 3px 7px;
+      }
+
+      .muted,
+      .hint {
+        color: var(--muted);
+      }
+
+      .hint {
+        margin-bottom: 14px;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
+      .kind {
+        flex: 0 0 auto;
+        padding: 2px 7px;
+        border-color: #d8e0ec;
+        border-radius: 999px;
+        color: #475569;
+        font-size: 10px;
+        font-weight: 650;
+        letter-spacing: 0.025em;
+      }
+
+      .kind.list {
+        border-color: #cbdcf8;
+        background: #edf4ff;
+        color: #355b99;
+      }
+
+      .kind.number {
+        border-color: #f1d8ae;
+        background: #fff7e9;
+        color: #8a5a16;
+      }
+
+      .kind.const {
+        border-color: #c9e6d0;
+        background: #effaf1;
+        color: #2e7140;
+      }
+
+      #palette {
+        gap: 7px;
+      }
+
+      #palette li.block {
+        min-height: 42px;
+        gap: 7px;
+        padding: 6px 7px;
+        border-color: #e0e6ef;
+        border-radius: 7px;
+        box-shadow: 0 1px 2px rgb(22 34 52 / 3%);
+        cursor: grab;
+        transition:
+          border-color 120ms ease,
+          background-color 120ms ease,
+          box-shadow 120ms ease;
+      }
+
+      #palette li.block:hover {
+        border-color: #b7c5d9;
+        box-shadow: 0 2px 7px rgb(22 34 52 / 7%);
+      }
+
+      #palette li.block.selected {
+        border-color: #7898d5;
+        background: #f0f5ff;
+        box-shadow: inset 3px 0 #5279c2;
+      }
+
+      #palette li.block .bname {
+        min-width: 72px;
+        flex: 1 1 90px;
+        overflow-wrap: anywhere;
+        color: #24334b;
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      #palette li.block .muted.small {
+        flex: 0 1 auto;
+        font-size: 10px;
+      }
+
+      #palette li.block .add {
+        margin-left: auto;
+      }
+
+      #blockEditor {
+        min-width: 0;
+        overflow-x: auto;
+        font-size: 12px;
+      }
+
+      #blockEditor .row label {
+        color: #526178;
+        font-weight: 580;
+      }
+
+      .block-usage {
+        margin: 12px 0;
+        padding: 12px;
+        border: 1px solid #e0e6ef;
+        border-radius: 8px;
+        background: #f8fafd;
+      }
+
+      .block-usage h3 {
+        margin: 0 0 8px;
+        font-size: 12px;
+      }
+
+      .block-usage ul {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .block-usage button {
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--accent);
+        text-align: left;
+      }
+
+      .block-usage button:hover:not(:disabled) {
+        background: transparent;
+        color: var(--accent-strong);
+        text-decoration: underline;
+      }
+
+      .block-usage .small {
+        display: block;
+        color: var(--muted);
+        overflow-wrap: anywhere;
+      }
+
+      #mnemonicList {
+        gap: 6px;
+        margin-bottom: 18px;
+      }
+
+      button.mn {
+        min-height: 32px;
+        padding: 5px 10px;
+        border-color: #d7dfeb;
+        border-radius: 6px;
+        background: #f9fbfe;
+        color: #3a4b64;
+      }
+
+      button.mn:hover {
+        border-color: #9db1d1;
+        background: #f1f5fb;
+      }
+
+      button.mn.selected {
+        border-color: #6688c9;
+        background: #eaf1ff;
+        color: #24458d;
+        box-shadow: inset 0 0 0 1px rgb(49 86 166 / 8%);
+      }
+
+      #mnemonicEditor > .row:first-child {
+        align-items: flex-end;
+        gap: 8px;
+        padding: 12px;
+        border: 1px solid #e5eaf2;
+        border-radius: 8px;
+        background: var(--surface-soft);
+      }
+
+      #mnemonicEditor .row label {
+        display: flex;
+        min-width: 120px;
+        flex: 1 1 140px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 5px;
+        color: #526178;
+        font-size: 12px;
+        font-weight: 580;
+      }
+
+      #mnemonicEditor .row label input {
+        width: 100%;
+      }
+
+      #mnemonicEditor > label {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        gap: 6px;
+        margin: 12px 0;
+        color: #526178;
+        font-size: 12px;
+        font-weight: 620;
+      }
+
+      #mnemonicEditor > label input {
+        width: 100%;
+      }
+
+      textarea.docDescription {
+        min-height: 96px;
+      }
+
+      textarea.docOperation {
+        width: 100%;
+        min-height: 36px;
+      }
+
+      #slotZone {
+        min-height: 64px;
+        gap: 8px;
+        padding: 10px;
+        border: 1px dashed #b9c6d8;
+        border-radius: 8px;
+        background: #fafcff;
+      }
+
+      #slotZone.over {
+        border-color: #6688c9;
+        background: #f1f6ff;
+      }
+
+      .chip {
+        max-width: 100%;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 6px 8px;
+        border-color: #cbd5e1;
+        border-radius: 7px;
+        box-shadow: 0 1px 2px rgb(22 34 52 / 4%);
+      }
+
+      .chip input.slabel {
+        width: 92px;
+      }
+
+      .chip input.slabel.autoPaddingName {
+        width: 240px;
+        max-width: min(280px, 56vw);
+        flex: 1 1 190px;
+      }
+
+      .chip .padding-width {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .encVariant {
+        gap: 10px 14px;
+        padding: 14px;
+        border-color: #e0e6ef;
+        border-radius: 8px;
+        background: #fbfcfe;
+      }
+
+      .encVariant > strong {
+        color: #263650;
+        font-size: 13px;
+      }
+
+      label.encField,
+      label.encReference {
+        gap: 5px;
+        color: #5b687d;
+        font-size: 11px;
+        font-weight: 560;
+      }
+
+      label.encField input,
+      label.encField select {
+        box-sizing: border-box;
+        max-width: 100%;
+        min-height: 34px;
+        border-color: #d3dce8;
+        border-radius: 5px;
+      }
+
+      label.encField input[readonly] {
+        background: #f0f3f8;
+        color: #54627a;
+      }
+
+      .encReferenceRow label.encReference input,
+      label.encReference input {
+        max-width: 560px;
+        min-height: 36px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      .result div {
+        margin: 7px 0;
+      }
+
+      .result code,
+      code {
+        border-radius: 4px;
+        background: #f0f3f8;
+        color: #334866;
+      }
+
+      .diagram {
+        padding-bottom: 4px;
+      }
+
+      table.items {
+        width: 100%;
+        table-layout: fixed;
+      }
+
+      table.items th:nth-child(1) { width: 26px; }
+      table.items th:nth-child(3) { width: 62px; }
+      table.items th:nth-child(4) { width: 55px; }
+      table.items th:nth-child(5) { width: 78px; }
+
+      table.items th {
+        color: #53637a;
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      table.items td,
+      table.items th {
+        padding: 6px 3px;
+        border-bottom-color: #edf0f5;
+      }
+
+      table.items td input {
+        width: 100%;
+      }
+
+      table.items td.bin span {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      table.items td:last-child {
+        white-space: nowrap;
+      }
+
+      table.items button.mini {
+        min-width: 24px;
+        padding: 3px;
+      }
+
+      #docTitle {
+        min-height: 38px;
+        padding: 7px 10px;
+        border-radius: 6px;
+      }
+
+      label.docIntroField {
+        gap: 6px;
+        margin-top: 14px;
+        color: #526178;
+        font-size: 12px;
+        font-weight: 620;
+      }
+
+      #docIntro {
+        min-height: 100px;
+      }
+
+      #mdOutput {
+        min-height: 260px;
+        padding: 12px;
+        border: 1px solid #dce3ed;
+        border-radius: 7px;
+        background: #f8fafd;
+        color: #334155;
+        line-height: 1.55;
+      }
+
+      .error,
+      .warning {
+        font-weight: 550;
+      }
+
+      .error {
+        color: #b42332;
+      }
+
+      .warning {
+        color: #946200;
+      }
+
+      ul.msgs {
+        padding: 10px 12px 10px 30px;
+        border-radius: 7px;
+        background: #fff8eb;
+      }
+
+      @media (max-width: 1050px) {
+        main {
+          grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.5fr);
+        }
+
+        .card {
+          padding: 16px;
+        }
+
+        #palette li.block .muted.small {
+          flex-basis: 100%;
+          padding-left: 4px;
+        }
+      }
+
+      @media (max-width: 760px) {
+        header {
+          position: static;
+          gap: 10px 12px;
+        }
+
+        header h1 {
+          width: 100%;
+          margin: 0;
+        }
+
+        #saveStatus {
+          margin-right: auto;
+        }
+
+        main {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 14px;
+          padding: 14px 12px 28px;
+        }
+
+        .col {
+          gap: 14px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        header {
+          padding: 12px;
+        }
+
+        header label {
+          width: 100%;
+        }
+
+        #saveStatus {
+          width: 100%;
+        }
+
+        .card {
+          padding: 14px 12px;
+          border-radius: 9px;
+        }
+
+        #mnemonicEditor > .row:first-child {
+          align-items: stretch;
+        }
+
+        #mnemonicEditor .row label {
+          min-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Opcode composer</h1>
+      <label
+        >Word width
+        <input id="wordWidth" type="number" min="1" max="64" /> bits</label
+      >
+      <span id="saveStatus"></span>
+      <button id="saveProject" title="Save the complete workspace as a JSON file">Save</button>
+      <button id="loadProject" title="Load a workspace or an older lists or mnemonics file">Load</button>
+      <input id="projectFile" type="file" accept=".json,application/json" hidden />
+      <button id="resetAll">Reset all</button>
+    </header>
+
+    <main>
+      <div class="col">
+        <section class="card">
+          <h2>Building blocks</h2>
+          <div id="paddingTemplate" draggable="true" title="Drag to add a new padding">
+            <span class="kind padding">padding</span>
+            <strong>Padding</strong>
+            <span class="muted small">1 bit</span>
+            <button id="insertPadding" class="mini" type="button" aria-label="Add padding to selected mnemonic">+</button>
+          </div>
+          <div class="row">
+            <button id="addList">+ List</button>
+            <button id="addNumber">+ Number</button>
+            <button id="addConst">+ Constant</button>
+          </div>
+          <p class="hint">
+            Click a block to edit it. Drag it onto the selected mnemonic, or use
+            its + button. Drag blocks within this list or use the arrows to reorder them.
+          </p>
+          <ul id="palette"></ul>
+        </section>
+
+        <section class="card">
+          <h2>Block</h2>
+          <div id="blockEditor"></div>
+          <div id="blockInfo"></div>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="card">
+          <h2>Mnemonics</h2>
+          <div class="row">
+            <button id="addMnemonic">+ Mnemonic</button>
+          </div>
+          <ul id="mnemonicList"></ul>
+          <div id="mnemonicEditor"></div>
+          <div id="mnemonicInfo"></div>
+        </section>
+
+        <section class="card">
+          <h2>Encode</h2>
+          <div id="encInputs"></div>
+          <div id="encOutput" class="result"></div>
+        </section>
+
+        <section class="card">
+          <h2>Decode</h2>
+          <div class="row">
+            <label
+              >Word
+              <input
+                id="decInput"
+                placeholder="$12345678, 0x…, %1010…, or hex digits"
+            /></label>
+          </div>
+          <div id="decOutput"></div>
+        </section>
+
+        <section class="card">
+          <h2>Check</h2>
+          <div id="checkOutput"></div>
+        </section>
+
+        <section class="card">
+          <h2>Documentation export</h2>
+          <label
+            >Document title
+            <input id="docTitle" value="Instruction Set Reference" />
+          </label>
+          <label class="docIntroField"
+            >Introduction
+            <textarea id="docIntro" rows="4"></textarea>
+          </label>
+          <div class="row">
+            <button id="exportMd">Generate Markdown</button>
+            <button id="copyMd">Copy Markdown</button>
+            <button id="printDocs">Preview / Print</button>
+          </div>
+          <textarea id="mdOutput" rows="16" readonly></textarea>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      "use strict";
+
+      const STORAGE_KEY = "opcodeComposer.v1";
+      const PADDING_COLOR = "#d6f5d6";
+      const PALETTE = [
+        "#cfe8ff",
+        "#ffe2b8",
+        "#d6f5d6",
+        "#f7d4f0",
+        "#fff3a8",
+        "#d9d4ff",
+        "#c8f0ec",
+        "#ffd1d1",
+        "#e6e6c8",
+        "#d4e4f7",
+      ];
+      const KIND_LABEL = {
+        list: "list",
+        number: "number",
+        const: "constant",
+        padding: "padding",
+      };
+      const NUMBER_MODES = ["signed", "unsigned", "raw"];
+      const numberModeOf = (b) =>
+        NUMBER_MODES.includes(b.numberMode)
+          ? b.numberMode
+          : b.signed === true ? "signed" : "unsigned";
+      const validBlockConstraints = (b) =>
+        (!Object.hasOwn(b, "startBit") || typeof b.startBit === "string") &&
+        (!Object.hasOwn(b, "required") || typeof b.required === "boolean") &&
+        (!Object.hasOwn(b, "generatedPadding") ||
+          (typeof b.generatedPadding === "boolean" &&
+            (!b.generatedPadding || b.kind === "padding")));
+      const DRAG_TYPE = "application/x-opcode-composer";
+      const $ = (id) => document.getElementById(id);
+
+      // DOM helper: text is always added as text nodes, never parsed as HTML.
+      function el(tag, props, ...children) {
+        const e = document.createElement(tag);
+        for (const [k, v] of Object.entries(props || {})) {
+          if (v === undefined) continue;
+          if (k === "class") e.className = v;
+          else if (k === "bg") e.style.background = v;
+          else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+          else e[k] = v;
+        }
+        e.append(
+          ...children.filter(
+            (c) => c !== null && c !== undefined && c !== false,
+          ),
+        );
+        return e;
+      }
+
+      const range = (n) => Array.from({ length: n }, (_, i) => i);
+      const maskOf = (w) => (1n << BigInt(w)) - 1n;
+      const bitLength = (v) => (v === 0n ? 0 : v.toString(2).length);
+      const hex = (v, bits) =>
+        "$" +
+        v
+          .toString(16)
+          .toUpperCase()
+          .padStart(Math.max(1, Math.ceil(bits / 4)), "0");
+      const bin = (v, bits) => v.toString(2).padStart(bits, "0");
+      const codeText = (v, w) => (w <= 8 ? "%" + bin(v, w) : hex(v, w));
+      const toSigned = (v, w) =>
+        v >= 1n << BigInt(w - 1) ? v - (1n << BigInt(w)) : v;
+      const bitRange = (s) =>
+        s.hi === s.lo ? String(s.hi) : `${s.hi}..${s.lo}`;
+      const segBits = (word, s) => (word >> BigInt(s.lo)) & maskOf(s.w);
+      const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
+      // Returns a BigInt, null when empty, or undefined when invalid.
+      function parseNumber(text) {
+        let s = String(text ?? "")
+          .trim()
+          .replace(/_/g, "");
+        if (s.startsWith("#")) s = s.slice(1).trim();
+        if (s === "") return null;
+        let neg = false;
+        if (s.startsWith("-")) {
+          neg = true;
+          s = s.slice(1);
+        }
+        let v;
+        if (/^\$[0-9a-f]+$/i.test(s)) v = BigInt("0x" + s.slice(1));
+        else if (/^0x[0-9a-f]+$/i.test(s)) v = BigInt(s);
+        else if (/^%[01]+$/.test(s)) v = BigInt("0b" + s.slice(1));
+        else if (/^0b[01]+$/i.test(s)) v = BigInt(s);
+        else if (/^\d+$/.test(s)) v = BigInt(s);
+        else return undefined;
+        return neg ? -v : v;
+      }
+
+      // Plain digits are read as hex in the decoder.
+      function parseWord(text) {
+        const s = String(text).trim().replace(/[\s_]/g, "");
+        if (s === "") return null;
+        if (/^\$[0-9a-f]+$/i.test(s)) return BigInt("0x" + s.slice(1));
+        if (/^0x[0-9a-f]+$/i.test(s)) return BigInt(s);
+        if (/^%[01]+$/.test(s)) return BigInt("0b" + s.slice(1));
+        if (/^0b[01]+$/i.test(s)) return BigInt(s);
+        if (/^[0-9a-f]+$/i.test(s)) return BigInt("0x" + s);
+        return undefined;
+      }
+
+      // Signed values accept both -2^(w-1)..-1 and the raw form 0..2^w-1.
+      function parseFieldValue(text, w, signed, emptyDefault) {
+        const v = parseNumber(text);
+        if (v === null)
+          return emptyDefault !== undefined
+            ? { value: emptyDefault }
+            : { error: "is empty." };
+        if (v === undefined) return { error: `"${text}" is not a number.` };
+        const max = 1n << BigInt(w);
+        const min = signed ? -(max >> 1n) : 0n;
+        if (v < min || v >= max)
+          return {
+            error: `${String(text).trim()} is out of range ${min}..${max - 1n}.`,
+          };
+        return { value: ((v % max) + max) % max };
+      }
+
+      function parseWidth(text) {
+        const t = String(text ?? "").trim();
+        if (!/^\d+$/.test(t)) return null;
+        const n = Number(t);
+        return n >= 1 && n <= 64 ? n : null;
+      }
+
+      // "R0..R15", "R0..15", "LD", "ADD=%1000"; separated by commas.
+      function parseBulk(text) {
+        const items = [];
+        for (const token of text.split(",").map((part) => part.trim()).filter(Boolean)) {
+          const eq = token.indexOf("=");
+          const name = eq < 0 ? token : token.slice(0, eq);
+          const code = eq < 0 ? "" : token.slice(eq + 1);
+          if (name.includes("..")) {
+            const m = /^([A-Za-z_]\w*?)(\d+)\.\.(?:\1)?(\d+)$/.exec(name);
+            if (!m || eq >= 0)
+              return {
+                error: `Cannot read "${token}". Use a range like R0..R15 (no code).`,
+              };
+            const a = Number(m[2]);
+            const b = Number(m[3]);
+            if (b < a || b - a > 1023)
+              return { error: `Range "${token}" is empty or too large.` };
+            for (let k = a; k <= b; k++)
+              items.push({ name: m[1] + k, code: "" });
+          } else if (name === "") {
+            return { error: `Item "${token}" has no name.` };
+          } else {
+            items.push({ name, code });
+          }
+        }
+        return items.length ? { items } : { error: "Nothing to add." };
+      }
+
+      // ---------- State ----------
+
+      function defaultState() {
+        return {
+          version: 1,
+          wordWidth: "32",
+          docTitle: "Instruction Set Reference",
+          docIntro: "",
+          nextId: 1,
+          blocks: [],
+          mnemonics: [],
+          selectedBlock: null,
+          selectedMnemonic: null,
+          selectedEncodeMnemonic: null,
+        };
+      }
+
+      function sanitize(o) {
+        const s = defaultState();
+        if (!o || typeof o !== "object") return s;
+        const str = (v, d = "") => (typeof v === "string" ? v : d);
+        const isId = (v) => Number.isInteger(v) && v > 0;
+        let maxId = 0;
+        const seeId = (id) => {
+          maxId = Math.max(maxId, id);
+          return id;
+        };
+        s.wordWidth = str(o.wordWidth, "32");
+        s.docTitle = str(o.docTitle, "Instruction Set Reference");
+        s.docIntro = str(o.docIntro);
+        s.blocks = (Array.isArray(o.blocks) ? o.blocks : [])
+          .filter(
+            (b) =>
+              b &&
+              typeof b === "object" &&
+              isId(b.id) &&
+              Object.hasOwn(KIND_LABEL, b.kind),
+          )
+          .map((b) => ({
+            id: seeId(b.id),
+            kind: b.kind,
+            name: str(b.name),
+            items: (Array.isArray(b.items) ? b.items : [])
+              .filter((it) => it && typeof it === "object" && isId(it.id))
+              .map((it) => ({
+                id: seeId(it.id),
+                name: str(it.name),
+                code: str(it.code),
+              })),
+            widthOverride: str(b.widthOverride),
+            width: str(b.width, "8"),
+            startBit: str(b.startBit),
+            required: b.required === true,
+            generatedPadding: b.kind === "padding" && b.generatedPadding === true,
+            signed: numberModeOf(b) === "signed",
+            numberMode: numberModeOf(b),
+            value: str(b.value),
+            color: typeof b.color === "string" && /^#[0-9a-f]{6}$/i.test(b.color)
+              ? b.color.toLowerCase()
+              : "",
+          }));
+        s.mnemonics = (Array.isArray(o.mnemonics) ? o.mnemonics : [])
+          .filter((m) => m && typeof m === "object" && isId(m.id))
+          .map((m) => ({
+            id: seeId(m.id),
+            groupId: seeId(isId(m.groupId) ? m.groupId : m.id),
+            name: str(m.name),
+            formName: str(m.formName),
+            addressing: str(m.addressing),
+            operation: str(m.operation),
+            assemblyLine: str(m.assemblyLine),
+            comparisons: (Array.isArray(m.comparisons) ? m.comparisons : []).map(
+              (variant) => ({
+                assemblyLine: str(variant?.assemblyLine),
+                values:
+                  variant?.values && typeof variant.values === "object"
+                    ? Object.fromEntries(
+                        Object.entries(variant.values)
+                          .filter(([id, value]) => isId(Number(id)) && typeof value === "string")
+                          .map(([id, value]) => [id, value]),
+                      )
+                    : {},
+              }),
+            ),
+            bytes: str(m.bytes),
+            cycles: str(m.cycles),
+            flags: str(m.flags),
+            description: str(m.description),
+            slots: (Array.isArray(m.slots) ? m.slots : [])
+              .filter(
+                (sl) =>
+                  sl &&
+                  typeof sl === "object" &&
+                  isId(sl.id) &&
+                  isId(sl.blockId),
+              )
+              .map((sl) => ({
+                id: seeId(sl.id),
+                blockId: sl.blockId,
+                label: str(sl.label),
+                blockName: str(sl.blockName),
+                pin: isId(sl.pin) ? sl.pin : null,
+                pinName: str(sl.pinName),
+                encValue: str(sl.encValue),
+              })),
+          }));
+        s.nextId = maxId + 1;
+        s.selectedBlock = isId(o.selectedBlock) ? o.selectedBlock : null;
+        s.selectedMnemonic = isId(o.selectedMnemonic)
+          ? o.selectedMnemonic
+          : null;
+        const encodeId = isId(o.selectedEncodeMnemonic)
+          ? o.selectedEncodeMnemonic
+          : s.selectedMnemonic;
+        s.selectedEncodeMnemonic = s.mnemonics.some((m) => m.id === encodeId)
+          ? encodeId
+          : s.mnemonics[0]?.id ?? null;
+        return s;
+      }
+
+      let loadMessage = "";
+      function loadState() {
+        let raw = null;
+        try {
+          raw = localStorage.getItem(STORAGE_KEY);
+        } catch {
+          return defaultState();
+        }
+        if (!raw) return defaultState();
+        try {
+          return sanitize(JSON.parse(raw));
+        } catch {
+          try {
+            localStorage.setItem(STORAGE_KEY + ".corrupt", raw);
+          } catch {
+            /* storage full or blocked */
+          }
+          loadMessage = `The saved data could not be read. It was copied to "${STORAGE_KEY}.corrupt" and a new workspace was started.`;
+          return defaultState();
+        }
+      }
+
+      function save() {
+        const status = $("saveStatus");
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          status.textContent = "Saved in this browser";
+          status.className = "";
+        } catch {
+          status.textContent = "Not saved: browser storage is unavailable";
+          status.className = "bad";
+        }
+      }
+
+      let state = loadState();
+      let dragData = null;
+
+      const newId = () => state.nextId++;
+      const normalizeName = (s) => String(s || "").trim().toLowerCase();
+      const blockById = (id) => state.blocks.find((b) => b.id === id) || null;
+      const blockByName = (name) => {
+        const target = normalizeName(name);
+        return state.blocks.find((b) => normalizeName(b.name) === target) || null;
+      };
+      const itemByName = (block, name) => {
+        const target = normalizeName(name);
+        return block.items.find((it) => normalizeName(it.name) === target) || null;
+      };
+      const currentBlock = () => blockById(state.selectedBlock);
+      const currentMnemonic = () =>
+        state.mnemonics.find((m) => m.id === state.selectedMnemonic) || null;
+      const currentEncodeMnemonic = () =>
+        state.mnemonics.find((m) => m.id === state.selectedEncodeMnemonic) || null;
+      const mnemonicGroupId = (m) => m.groupId ?? m.id;
+      const mnemonicForms = (m) =>
+        state.mnemonics.filter((form) => mnemonicGroupId(form) === mnemonicGroupId(m));
+      const formName = (m) =>
+        m.formName || `Form ${mnemonicForms(m).findIndex((form) => form.id === m.id) + 1}`;
+      const mnemonicDisplayName = (m) =>
+        (m.name || "(unnamed)") +
+        (mnemonicForms(m).length > 1 ? ` — ${formName(m)}` : "");
+      const setMnemonicName = (m, value) => {
+        for (const form of mnemonicForms(m)) form.name = value;
+      };
+      function validMnemonicGroups(mnemonics) {
+        const groups = new Map();
+        for (const m of mnemonics) {
+          if (!m || typeof m !== "object" ||
+              (Object.hasOwn(m, "groupId") &&
+                (!Number.isInteger(m.groupId) || m.groupId <= 0)) ||
+              (Object.hasOwn(m, "formName") && typeof m.formName !== "string"))
+            return false;
+          const id = m.groupId ?? m.id;
+          if (groups.has(id) && groups.get(id) !== m.name)
+            return false;
+          groups.set(id, m.name);
+        }
+        return true;
+      }
+      const itemNameById = (b, id) => {
+        const it = b.items.find((x) => x.id === id);
+        return it ? it.name || "?" : "?";
+      };
+      const defaultListItem = (slot, block) =>
+        block.items.find((item) => item.id === slot.pin) || block.items[0] || null;
+      const listDefaultText = (p) => {
+        const item = defaultListItem(p.slot, p.block);
+        return item
+          ? `${p.pinCode === undefined ? "default" : "fixed"} ${item.name || "?"} (${codeText(p.info.codes.get(item.id), p.w)})`
+          : "";
+      };
+
+      // ---------- Computation ----------
+
+      function blockInfo(b) {
+        const errors = [];
+        const warnings = [];
+        if (b.startBit !== "") {
+          const wordWidth = parseWidth(state.wordWidth);
+          if (!/^\d+$/.test(b.startBit) || Number(b.startBit) > 63)
+            errors.push("Start bit must be an integer from 0 to 63.");
+          else if (wordWidth !== null && Number(b.startBit) >= wordWidth)
+            errors.push(`Start bit must be less than the ${wordWidth}-bit word width.`);
+        }
+        if (!b.name.trim()) warnings.push("Name is empty.");
+        else if (
+          state.blocks.some(
+            (x) =>
+              x !== b &&
+              x.name.trim().toLowerCase() === b.name.trim().toLowerCase(),
+          )
+        ) {
+          warnings.push(`Another block is also named "${b.name}".`);
+        }
+        if (b.kind === "list") {
+          const codes = new Map();
+          if (b.items.length === 0) {
+            errors.push("The list has no items.");
+            return { width: null, codes, errors, warnings };
+          }
+          const seenCodes = new Map();
+          const seenNames = new Map();
+          let max = 0n;
+          b.items.forEach((it, i) => {
+            const label = it.name || `#${i + 1}`;
+            if (!it.name.trim()) warnings.push(`Item ${i + 1}: name is empty.`);
+            else {
+              const key = it.name.trim().toLowerCase();
+              if (seenNames.has(key))
+                warnings.push(
+                  `Items ${seenNames.get(key)} and ${i + 1} are both named "${it.name}".`,
+                );
+              else seenNames.set(key, i + 1);
+            }
+            let code = BigInt(i);
+            if (it.code.trim() !== "") {
+              const v = parseNumber(it.code);
+              if (v === undefined || v === null || v < 0n) {
+                errors.push(
+                  `Item ${label}: code "${it.code}" is not a number of 0 or more.`,
+                );
+                return;
+              }
+              code = v;
+            }
+            const ck = code.toString();
+            if (seenCodes.has(ck))
+              errors.push(
+                `Items ${seenCodes.get(ck)} and ${label} have the same code ${code}.`,
+              );
+            else seenCodes.set(ck, label);
+            codes.set(it.id, code);
+            if (code > max) max = code;
+          });
+          const auto = Math.max(1, bitLength(max));
+          if (auto > 64) {
+            errors.push("A code needs more than 64 bits.");
+            return { width: null, codes, errors, warnings };
+          }
+          let width = auto;
+          if (b.widthOverride.trim() !== "") {
+            const w = parseWidth(b.widthOverride);
+            if (w === null)
+              errors.push("Width override must be an integer from 1 to 64.");
+            else if (w < auto)
+              errors.push(
+                `Width override ${w} is less than the ${auto} bits the codes need.`,
+              );
+            else width = w;
+          }
+          return { width, auto, codes, errors, warnings };
+        }
+        const width = parseWidth(b.width);
+        if (width === null) {
+          errors.push("Width must be an integer from 1 to 64.");
+          return { width: null, errors, warnings };
+        }
+        if (b.kind === "const") {
+          const r = parseFieldValue(b.value, width, true);
+          if (r.error) errors.push(`Value ${r.error}`);
+          else return { width, value: r.value, errors, warnings };
+        }
+        return { width, errors, warnings };
+      }
+
+      function reservedLabel(hi, lo) {
+        const range = hi === lo ? String(hi) : `${hi}:${lo}`;
+        return `RESERVED [${range}]`;
+      }
+
+      function paddingLabel(m, hi, lo) {
+        const mnemonicName = m.name.trim() || "(unnamed)";
+        return `${mnemonicName}/${reservedLabel(hi, lo)}`;
+      }
+
+      function mnemonicLayout(m, infos, W) {
+        const errors = [];
+        const warnings = [];
+        if (!m.name.trim()) warnings.push("Name is empty.");
+        for (const b of state.blocks) {
+          if (b.required && !m.slots.some((slot) => slot.blockId === b.id))
+            errors.push(`Required block "${b.name || "(unnamed)"}" is missing.`);
+        }
+        if (W === null) {
+          errors.push("The word width must be an integer from 1 to 64.");
+          return {
+            valid: false,
+            ok: false,
+            width: W,
+            errors,
+            warnings,
+            placed: [],
+            segments: [],
+          };
+        }
+        const placed = [];
+        const labels = new Map();
+        const reserved = [];
+        const fixedBlocks = new Set();
+        const fixedSlots = new Set();
+        let pos = W;
+        let ok = true;
+        m.slots.forEach((sl, i) => {
+          const b = blockById(sl.blockId);
+          if (!b || b.startBit === "" || fixedBlocks.has(b.id)) return;
+          fixedBlocks.add(b.id);
+          fixedSlots.add(i);
+          const info = infos.get(b.id);
+          if (info.width === null || !/^\d+$/.test(b.startBit) ||
+              Number(b.startBit) >= W) {
+            ok = false;
+            return;
+          }
+          const hi = Number(b.startBit);
+          const lo = hi - info.width + 1;
+          if (lo < 0) {
+            errors.push(`Slot ${i + 1} (${b.name}): ${info.width} bits do not fit starting at bit ${hi}.`);
+            ok = false;
+            return;
+          }
+          const overlap = reserved.find((r) => lo <= r.hi && hi >= r.lo);
+          if (overlap) {
+            errors.push(`Slot ${i + 1} (${b.name}): fixed position overlaps slot ${overlap.index + 1}.`);
+            ok = false;
+            return;
+          }
+          reserved.push({ slot: sl, index: i, hi, lo });
+        });
+        reserved.sort((a, b) => b.hi - a.hi);
+        m.slots.forEach((sl, i) => {
+          const b = blockById(sl.blockId);
+          if (!b) {
+            errors.push(`Slot ${i + 1}: its block was deleted.`);
+            ok = false;
+            return;
+          }
+          const info = infos.get(b.id);
+          const fixedPosition = fixedSlots.has(i);
+          const reservation = fixedPosition
+            ? reserved.find((r) => r.slot === sl)
+            : null;
+          if (!fixedPosition && info.width !== null) {
+            let overlap;
+            while ((overlap = reserved.find((r) =>
+              pos - info.width <= r.hi && pos - 1 >= r.lo)))
+              pos = overlap.lo;
+          }
+          const hi = fixedPosition ? (reservation?.hi ?? pos - 1) : pos - 1;
+          const lo = info.width === null ? hi : hi - info.width + 1;
+          const label =
+            b.kind === "padding"
+              ? info.width === null
+                ? `${m.name.trim() || "(unnamed)"}/RESERVED`
+                : paddingLabel(m, hi, lo)
+              : sl.label.trim() || b.name || `slot${i + 1}`;
+          const key = label.toLowerCase();
+          if (labels.has(key))
+            warnings.push(
+              `Slots ${labels.get(key)} and ${i + 1} are both named "${label}". Give them names such as Rn, Ra.`,
+            );
+          else labels.set(key, i + 1);
+          if (info.errors.length)
+            errors.push(
+              `Slot ${i + 1} (${label}): block "${b.name}" has errors.`,
+            );
+          if (info.width === null || (fixedPosition && !reservation)) {
+            ok = false;
+            return;
+          }
+          if (!fixedPosition) {
+            if (lo < 0) {
+              errors.push(`Slot ${i + 1} (${label}): not enough contiguous bits remain.`);
+              ok = false;
+              return;
+            }
+            pos = lo;
+          }
+          const p = {
+            slot: sl,
+            block: b,
+            info,
+            index: i,
+            label,
+            hi,
+            lo,
+            w: info.width,
+            fixed: false,
+          };
+          if (b.kind === "const") p.fixed = true;
+          if (b.kind === "padding") p.fixed = true;
+          if (b.kind === "list") {
+            const item = defaultListItem(sl, b);
+            if (item && info.codes.has(item.id)) {
+              p.pinCode = info.codes.get(item.id);
+              p.fixed = true;
+            }
+            if (sl.pin !== null && !info.codes.has(sl.pin))
+              warnings.push(
+                `Slot ${i + 1} (${label}): the selected item no longer exists; the first item is used instead.`,
+              );
+          }
+          placed.push(p);
+        });
+        if (ok && placed.length === 0) warnings.push("No slots yet.");
+        const segments = [];
+        let free = 0;
+        if (ok) {
+          let nextBit = W - 1;
+          const addFree = (hi, lo) => {
+            if (hi < lo) return;
+            const w = hi - lo + 1;
+            free += w;
+            segments.push({ free: true, hi, lo, w, fixed: true });
+          };
+          for (const p of [...placed].sort((a, b) => b.hi - a.hi)) {
+            addFree(nextBit, p.hi + 1);
+            segments.push(p);
+            nextBit = p.lo - 1;
+          }
+          addFree(nextBit, 0);
+        }
+        let fixedMask = 0n;
+        let fixedValue = 0n;
+        if (ok) {
+          for (const p of placed) {
+            let v;
+            if (p.block.kind === "const") v = p.info.value;
+            else if (p.block.kind === "padding") v = 0n;
+            else if (p.block.kind === "list") v = p.pinCode;
+            else continue;
+            if (v === undefined) continue;
+            fixedMask |= maskOf(p.w) << BigInt(p.lo);
+            fixedValue |= v << BigInt(p.lo);
+          }
+          for (const s of segments)
+            if (s.free) fixedMask |= maskOf(s.w) << BigInt(s.lo);
+        }
+        return {
+          valid: ok && errors.length === 0 && placed.length > 0,
+          ok,
+          width: W,
+          errors,
+          warnings,
+          placed,
+          segments,
+          free,
+          used: ok ? W - free : null,
+          fixedMask,
+          fixedValue,
+        };
+      }
+
+      function assignBlockColors() {
+        const used = new Set(["#eeeeee", PADDING_COLOR]);
+        const rgbColor = (rgb) =>
+          "#" + rgb.map((v) => v.toString(16).padStart(2, "0")).join("");
+        for (const block of state.blocks) {
+          if (block.kind === "padding") block.color = PADDING_COLOR;
+          else if (block.color && !used.has(block.color)) used.add(block.color);
+          else block.color = "";
+        }
+
+        function* colors() {
+          yield* PALETTE;
+          for (let i = 0; i < 216; i++) {
+            const n = (i * 101) % 216;
+            const rgb = [
+              160 + (n % 6) * 17,
+              160 + (Math.floor(n / 6) % 6) * 17,
+              160 + Math.floor(n / 36) * 17,
+            ];
+            yield rgbColor(rgb);
+          }
+          for (let i = 0; i < 96 ** 3; i++) {
+            const n = (i * 104729) % (96 ** 3);
+            const rgb = [
+              160 + (n % 96),
+              160 + (Math.floor(n / 96) % 96),
+              160 + Math.floor(n / (96 ** 2)),
+            ];
+            yield rgbColor(rgb);
+          }
+          for (let i = 0; i < 0x1000000; i++)
+            yield "#" + ((i * 65539) % 0x1000000).toString(16).padStart(6, "0");
+        }
+
+        const candidates = colors();
+        for (const block of state.blocks) {
+          if (block.color) continue;
+          let candidate = candidates.next();
+          while (!candidate.done && used.has(candidate.value))
+            candidate = candidates.next();
+          if (candidate.done) throw new Error("No unique block colors remain.");
+          block.color = candidate.value;
+          used.add(block.color);
+        }
+      }
+
+      function computeAll() {
+        assignBlockColors();
+        const W = parseWidth(state.wordWidth);
+        const infos = new Map(state.blocks.map((b) => [b.id, blockInfo(b)]));
+        const layouts = new Map(
+          state.mnemonics.map((m) => [m.id, mnemonicLayout(m, infos, W)]),
+        );
+        const usage = new Map();
+        for (const m of state.mnemonics)
+          for (const sl of m.slots)
+            usage.set(sl.blockId, (usage.get(sl.blockId) || 0) + 1);
+        return { W, infos, layouts, usage };
+      }
+
+      function itemForCode(p, v) {
+        return (
+          p.block.items.find((it) => p.info.codes.get(it.id) === v) || null
+        );
+      }
+
+      function segmentValueText(s, word) {
+        const v = segBits(word, s);
+        if (s.free) return v === 0n ? "0" : `${hex(v, s.w)} (should be 0)`;
+        const b = s.block;
+        if (b.kind === "list") {
+          const it = itemForCode(s, v);
+          return it ? it.name || "?" : `? ${codeText(v, s.w)}`;
+        }
+        if (b.kind === "number") {
+          if (b.numberMode === "raw") return codeText(v, s.w);
+          return (b.signed ? toSigned(v, s.w) : v).toString();
+        }
+        if (b.kind === "padding")
+          return v === 0n ? "0" : `${hex(v, s.w)} (should be 0)`;
+        return codeText(v, s.w);
+      }
+
+      function segmentIsBad(s, word) {
+        const v = segBits(word, s);
+        if (s.free) return v !== 0n;
+        if (s.block.kind === "list") return !itemForCode(s, v);
+        if (s.block.kind === "const") return v !== s.info.value;
+        if (s.block.kind === "padding") return v !== 0n;
+        return false;
+      }
+
+      function asmText(m, lay, word) {
+        const parts = lay.placed
+          .filter((p) => !p.fixed)
+          .map((p) => `${p.label}=${segmentValueText(p, word)}`);
+        return (
+          (m.name || "(unnamed)") + (parts.length ? " " + parts.join(", ") : "")
+        );
+      }
+
+      function encodeWord(lay, values = null) {
+        const errors = [];
+        let word = 0n;
+        for (const p of lay.placed) {
+          const b = p.block;
+          let v;
+          const value = values?.[p.slot.id] ?? p.slot.encValue;
+          if (b.kind === "const") v = p.info.value;
+          else if (b.kind === "padding") v = 0n;
+          else if (b.kind === "list") {
+            const item = value === ""
+              ? defaultListItem(p.slot, b)
+              : b.items.find((it) => String(it.id) === value);
+            if (!item || !p.info.codes.has(item.id)) {
+              errors.push(`${p.label}: the selected list item is unavailable.`);
+              continue;
+            }
+            v = p.info.codes.get(item.id);
+          } else {
+            const r = parseFieldValue(value, p.w, b.signed, 0n);
+            if (r.error) {
+              errors.push(`${p.label}: ${r.error}`);
+              continue;
+            }
+            v = r.value;
+          }
+          word |= v << BigInt(p.lo);
+        }
+        return { word, errors };
+      }
+
+      function patternText(lay) {
+        return lay.segments
+          .map((s) =>
+            range(s.w)
+              .map((k) => {
+                const bit = BigInt(s.hi - k);
+                return (lay.fixedMask >> bit) & 1n
+                  ? String((lay.fixedValue >> bit) & 1n)
+                  : "x";
+              })
+              .join(""),
+          )
+          .join(" ");
+      }
+
+      // ---------- Rendering helpers ----------
+
+      function messageList(items, cls) {
+        return items.length
+          ? el(
+              "ul",
+              { class: "msgs " + cls },
+              ...items.map((m) => el("li", {}, m)),
+            )
+          : null;
+      }
+
+      const segColor = (s) =>
+        s.free ? "#eeeeee" : s.block.color;
+
+      function segBlockText(s) {
+        if (s.free) return "0";
+        const b = s.block;
+        if (b.kind === "const")
+          return `${b.name} = ${codeText(s.info.value ?? 0n, s.w)}`;
+        if (b.kind === "list" && s.pinCode !== undefined)
+          return `${b.name} = ${defaultListItem(s.slot, b)?.name || "?"}`;
+        if (b.kind === "number")
+          return `${b.name}${b.numberMode === "raw" ? " (raw)" : b.signed ? " (signed)" : ""}`;
+        if (b.kind === "padding") return s.label;
+        return b.name;
+      }
+
+      function renderDiagram(lay, word) {
+        if (!lay.ok || lay.segments.length === 0) return null;
+        const W = lay.width;
+        const segAt = (bit) =>
+          lay.segments.find((s) => bit <= s.hi && bit >= s.lo);
+        const rows = [
+          el("tr", {}, ...range(W).map((k) => el("th", {}, String(W - 1 - k)))),
+          el(
+            "tr",
+            {},
+            ...lay.segments.map((s) =>
+              el(
+                "td",
+                {
+                  colSpan: s.w,
+                  class: "start" + (s.free ? " free" : ""),
+                  bg: segColor(s),
+                  title: `${s.free ? "unused" : s.label}: bits ${bitRange(s)}, ${plural(s.w, "bit")}`,
+                },
+                s.free ? "unused" : s.label,
+              ),
+            ),
+          ),
+          el(
+            "tr",
+            {},
+            ...lay.segments.map((s) =>
+              el(
+                "td",
+                {
+                  colSpan: s.w,
+                  class:
+                    "start sub" +
+                    (s.fixed && !s.free ? " fixed" : "") +
+                    (s.free ? " free" : ""),
+                  bg: segColor(s),
+                },
+                segBlockText(s),
+              ),
+            ),
+          ),
+        ];
+        if (word !== null) {
+          rows.push(
+            el(
+              "tr",
+              {},
+              ...range(W).map((k) => {
+                const bit = W - 1 - k;
+                const s = segAt(bit);
+                return el(
+                  "td",
+                  { class: s.hi === bit ? "start" : "", bg: segColor(s) },
+                  ((word >> BigInt(bit)) & 1n).toString(),
+                );
+              }),
+            ),
+          );
+          rows.push(
+            el(
+              "tr",
+              {},
+              ...lay.segments.map((s) =>
+                el(
+                  "td",
+                  {
+                    colSpan: s.w,
+                    class: "start sub" + (segmentIsBad(s, word) ? " bad" : ""),
+                    bg: segColor(s),
+                  },
+                  segmentValueText(s, word),
+                ),
+              ),
+            ),
+          );
+        }
+        return el(
+          "div",
+          { class: "diagram" },
+          el("table", { class: "bits" }, el("tbody", {}, ...rows)),
+        );
+      }
+
+      function alignDiagrams(box) {
+        const tables = [...box.querySelectorAll("table.bits")];
+        if (tables.length < 2) return;
+
+        const measure = tables[0].cloneNode(true);
+        measure.style.cssText = "position: fixed; visibility: hidden; width: max-content";
+        for (const table of tables.slice(1)) {
+          for (const row of [...table.tBodies[0].rows].slice(1))
+            measure.tBodies[0].append(row.cloneNode(true));
+        }
+        document.body.append(measure);
+        const widths = [...measure.rows[0].cells].map(
+          (cell) => cell.getBoundingClientRect().width,
+        );
+        const width = measure.getBoundingClientRect().width;
+        measure.remove();
+
+        for (const table of tables) {
+          const columns = widths.map((width) => {
+            const col = document.createElement("col");
+            col.style.width = `${width}px`;
+            return col;
+          });
+          table.prepend(el("colgroup", {}, ...columns));
+          table.style.tableLayout = "fixed";
+          table.style.width = `${width}px`;
+        }
+        const diagrams = tables.map((table) => table.parentElement);
+        for (const diagram of diagrams) {
+          diagram.addEventListener("scroll", () => {
+            for (const other of diagrams) {
+              if (other !== diagram && other.scrollLeft !== diagram.scrollLeft)
+                other.scrollLeft = diagram.scrollLeft;
+            }
+          });
+        }
+      }
+
+      function blockSummary(b, info) {
+        const constraints = [
+          b.startBit !== "" ? `start bit ${b.startBit}` : "",
+          b.required ? "required" : "",
+        ].filter(Boolean);
+        let summary;
+        if (info.width === null) summary = "? bits";
+        else if (b.kind === "list")
+          summary = `${plural(b.items.length, "item")}, ${plural(info.width, "bit")}`;
+        else if (b.kind === "number")
+          summary = `${b.numberMode}, ${plural(info.width, "bit")}`;
+        else if (b.kind === "padding") summary = `${plural(info.width, "bit")}, fixed to 0`;
+        else summary = `${plural(info.width, "bit")} = ${info.value !== undefined ? codeText(info.value, info.width) : "?"}`;
+        return [summary, ...constraints].join(", ");
+      }
+
+      function clearDropMarks() {
+        document
+          .querySelectorAll(".over, .drop-before, .drop-end")
+          .forEach((e) =>
+            e.classList.remove("over", "drop-before", "drop-end"),
+          );
+      }
+
+      function startDrag(e, data, effect) {
+        dragData = data;
+        e.dataTransfer.setData(DRAG_TYPE, "1");
+        e.dataTransfer.effectAllowed = effect;
+      }
+
+      function endDrag() {
+        dragData = null;
+        clearDropMarks();
+      }
+
+      function dropIndex(zone, e) {
+        const chips = [...zone.querySelectorAll(".chip")];
+        for (let i = 0; i < chips.length; i++) {
+          const r = chips[i].getBoundingClientRect();
+          if (e.clientY < r.top) return i;
+          if (e.clientY <= r.bottom && e.clientX < r.left + r.width / 2)
+            return i;
+        }
+        return chips.length;
+      }
+
+      // ---------- Actions ----------
+
+      function createBlock(kind) {
+        const n = state.blocks.filter((b) => b.kind === kind).length + 1;
+        const b = {
+          id: newId(),
+          kind,
+          name: `${KIND_LABEL[kind]}${n}`,
+          items: [],
+          widthOverride: "",
+          width: kind === "const" ? "2" : "16",
+          startBit: "",
+          required: false,
+          generatedPadding: false,
+          signed: kind === "number",
+          numberMode: kind === "number" ? "signed" : "unsigned",
+          value: kind === "const" ? "0" : "",
+          color: "",
+        };
+        if (kind === "padding") b.width = "1";
+        return b;
+      }
+
+      function addBlock(kind) {
+        const b = createBlock(kind);
+        state.blocks.push(b);
+        state.selectedBlock = b.id;
+        refresh();
+        const name = $("blockEditor").querySelector("input");
+        if (name) {
+          name.focus();
+          name.select();
+        }
+      }
+
+      function deleteBlock(b) {
+        const used = state.mnemonics.reduce(
+          (n, m) => n + m.slots.filter((s) => s.blockId === b.id).length,
+          0,
+        );
+        const msg = used
+          ? `Delete block "${b.name}"? It is used in ${plural(used, "mnemonic slot")}, which will be removed.`
+          : `Delete block "${b.name}"?`;
+        if (!confirm(msg)) return;
+        for (const m of state.mnemonics)
+          m.slots = m.slots.filter((s) => s.blockId !== b.id);
+        state.blocks = state.blocks.filter((x) => x !== b);
+        state.selectedBlock = null;
+        refresh();
+      }
+
+      function moveItem(b, i, d) {
+        [b.items[i], b.items[i + d]] = [b.items[i + d], b.items[i]];
+        refresh();
+      }
+
+      function moveBlock(i, d) {
+        const visible = state.blocks.filter((b) => b.kind !== "padding");
+        const target = i + d;
+        if (target < 0 || target >= visible.length) return;
+        [visible[i], visible[target]] = [visible[target], visible[i]];
+        let next = 0;
+        state.blocks = state.blocks.map((b) =>
+          b.kind === "padding" ? b : visible[next++]);
+        refresh("blockEditor");
+        const row = $("palette").children[target];
+        const button = row.querySelector(d < 0 ? ".move-up" : ".move-down");
+        (button.disabled
+          ? row.querySelector(d < 0 ? ".move-down" : ".move-up")
+          : button).focus();
+      }
+
+      function moveBlockTo(id, to) {
+        const visible = state.blocks.filter((b) => b.kind !== "padding");
+        const from = visible.findIndex((b) => b.id === id);
+        if (from < 0) return;
+        if (to > from) to--;
+        if (to === from || to < 0 || to >= visible.length) return;
+        const [block] = visible.splice(from, 1);
+        visible.splice(to, 0, block);
+        let next = 0;
+        state.blocks = state.blocks.map((b) =>
+          b.kind === "padding" ? b : visible[next++]);
+        refresh("blockEditor");
+      }
+
+      function pruneGeneratedPadding() {
+        const used = new Set(state.mnemonics.flatMap((m) =>
+          m.slots.map((slot) => slot.blockId)));
+        state.blocks = state.blocks.filter((b) =>
+          !b.generatedPadding || used.has(b.id));
+        if (state.selectedBlock !== null && !blockById(state.selectedBlock))
+          state.selectedBlock = null;
+      }
+
+      function deleteItem(b, i) {
+        const id = b.items[i].id;
+        b.items.splice(i, 1);
+        for (const m of state.mnemonics) {
+          for (const sl of m.slots) {
+            if (sl.blockId !== b.id) continue;
+            if (sl.pin === id) sl.pin = null;
+            if (sl.encValue === String(id)) sl.encValue = "";
+          }
+        }
+        refresh();
+      }
+
+      function addMnemonic() {
+        const id = newId();
+        const m = {
+          id,
+          groupId: id,
+          name: `mnemonic${new Set(state.mnemonics.map(mnemonicGroupId)).size + 1}`,
+          formName: "",
+          addressing: "",
+          operation: "",
+          assemblyLine: "",
+          comparisons: [],
+          bytes: "",
+          cycles: "",
+          flags: "",
+          description: "",
+          slots: [],
+        };
+        state.mnemonics.push(m);
+        state.selectedMnemonic = m.id;
+        if (state.selectedEncodeMnemonic === null)
+          state.selectedEncodeMnemonic = m.id;
+        refresh();
+        const name = $("mnemonicEditor").querySelector("input");
+        if (name) {
+          name.focus();
+          name.select();
+        }
+      }
+
+      function copyMnemonicForm(m, groupId, name) {
+        const slots = m.slots.map((s) => ({ ...s, id: newId() }));
+        const slotIds = new Map(m.slots.map((slot, i) => [slot.id, slots[i].id]));
+        return {
+          ...m,
+          id: newId(),
+          groupId,
+          name,
+          comparisons: (m.comparisons || []).map((variant) => ({
+            assemblyLine: variant.assemblyLine || "",
+            values: Object.fromEntries(
+              Object.entries(variant.values || {}).flatMap(([id, value]) =>
+                slotIds.has(Number(id)) ? [[slotIds.get(Number(id)), value]] : [],
+              ),
+            ),
+          })),
+          slots,
+        };
+      }
+
+      function addMnemonicForm(m) {
+        const form = copyMnemonicForm(m, mnemonicGroupId(m), m.name);
+        const names = new Set(mnemonicForms(m).map(formName));
+        let n = 1;
+        while (names.has(`Form ${n}`)) n++;
+        form.formName = `Form ${n}`;
+        state.mnemonics.splice(state.mnemonics.indexOf(m) + 1, 0, form);
+        state.selectedMnemonic = form.id;
+        refresh();
+      }
+
+      function duplicateMnemonic(m) {
+        const groupId = newId();
+        const copies = mnemonicForms(m).map((form) =>
+          copyMnemonicForm(form, groupId, m.name + "_copy"),
+        );
+        state.mnemonics.push(...copies);
+        state.selectedMnemonic = copies[0].id;
+        refresh();
+      }
+
+      function deleteMnemonic(m) {
+        if (!confirm(`Delete mnemonic "${m.name || "(unnamed)"}"?`)) return;
+        const groupId = mnemonicGroupId(m);
+        const removed = new Set(mnemonicForms(m).map((form) => form.id));
+        state.mnemonics = state.mnemonics.filter((x) => mnemonicGroupId(x) !== groupId);
+        pruneGeneratedPadding();
+        state.selectedMnemonic = null;
+        if (removed.has(state.selectedEncodeMnemonic))
+          state.selectedEncodeMnemonic = state.mnemonics[0]?.id ?? null;
+        refresh();
+      }
+
+      function deleteMnemonicForm(m) {
+        const forms = mnemonicForms(m);
+        if (forms.length < 2) return;
+        if (!confirm(`Delete ${formName(m)} from "${m.name || "(unnamed)"}"?`)) return;
+        state.mnemonics = state.mnemonics.filter((form) => form !== m);
+        pruneGeneratedPadding();
+        const next = forms.find((form) => form !== m);
+        state.selectedMnemonic = next.id;
+        if (state.selectedEncodeMnemonic === m.id)
+          state.selectedEncodeMnemonic = next.id;
+        refresh();
+      }
+
+      function addSlot(m, blockId, index) {
+        if (!m || !blockById(blockId)) return;
+        m.slots.splice(index, 0, {
+          id: newId(),
+          blockId,
+          label: "",
+          pin: null,
+          encValue: "",
+        });
+        refresh();
+      }
+
+      function addPaddingSlot(m, index) {
+        if (!m) return;
+        const b = createBlock("padding");
+        b.generatedPadding = true;
+        state.blocks.push(b);
+        addSlot(m, b.id, index);
+      }
+
+      function setPaddingWidth(slot, width) {
+        let b = blockById(slot.blockId);
+        const uses = state.mnemonics.reduce((count, m) =>
+          count + m.slots.filter((s) => s.blockId === b.id).length, 0);
+        if (uses > 1) {
+          b = { ...b, id: newId(), generatedPadding: true };
+          state.blocks.push(b);
+          slot.blockId = b.id;
+        }
+        b.width = width;
+        refresh("mnemonicEditor");
+      }
+
+      function moveSlot(m, from, to) {
+        if (to > from) to--;
+        if (to === from || to < 0 || to >= m.slots.length) return;
+        const [s] = m.slots.splice(from, 1);
+        m.slots.splice(to, 0, s);
+        refresh();
+      }
+
+      function paddingNamesByBlock(ctx) {
+        const names = new Map();
+        for (const m of state.mnemonics) {
+          for (const p of ctx.layouts.get(m.id).placed) {
+            if (p.block.kind !== "padding") continue;
+            const blockNames = names.get(p.block.id) || [];
+            blockNames.push(p.label);
+            names.set(p.block.id, blockNames);
+          }
+        }
+        return names;
+      }
+
+      // ---------- Renderers ----------
+
+      function renderPalette(ctx) {
+        const m = currentMnemonic();
+        const blocks = state.blocks.filter((b) => b.kind !== "padding");
+        $("insertPadding").disabled = !m;
+        if (!blocks.length) {
+          $("palette").replaceChildren(
+            el("li", { class: "muted" }, "No blocks yet."),
+          );
+          return;
+        }
+        $("palette").replaceChildren(
+          ...blocks.map((b, i) => {
+            const info = ctx.infos.get(b.id);
+            const name = b.name;
+            return el(
+              "li",
+              {
+                class:
+                  "block" + (b.id === state.selectedBlock ? " selected" : ""),
+                draggable: true,
+                title: b.kind === "padding"
+                  ? "Click to edit. The name is generated from each mnemonic and bit position."
+                  : "Click to edit. Drag to reorder or onto a mnemonic.",
+                onclick: () => {
+                  state.selectedBlock = b.id;
+                  refresh();
+                },
+                ondragstart: (e) =>
+                  startDrag(e, { type: "block", id: b.id }, "copyMove"),
+                ondragend: endDrag,
+              },
+              el("span", { class: "kind " + b.kind }, KIND_LABEL[b.kind]),
+              el("span", { class: "bname" }, name || "(unnamed)"),
+              el("span", { class: "muted small" }, blockSummary(b, info)),
+              info.errors.length
+                ? el(
+                    "span",
+                    { class: "error", title: info.errors.join("\n") },
+                    "⚠",
+                  )
+                : null,
+              el(
+                "button",
+                {
+                  class: "add mini",
+                  title: m
+                    ? `Add to ${m.name || "the selected mnemonic"}`
+                    : "Select a mnemonic first",
+                  disabled: !m,
+                  onclick: (e) => {
+                    e.stopPropagation();
+                    addSlot(m, b.id, m.slots.length);
+                  },
+                },
+                "+",
+              ),
+              ...[
+                [-1, "↑", "up"],
+                [1, "↓", "down"],
+              ].map(([direction, arrow, label]) =>
+                el(
+                  "button",
+                  {
+                    class: `mini move-${label}`,
+                    title: `Move ${b.name || "(unnamed)"} ${label}`,
+                    ariaLabel: `Move ${b.name || "(unnamed)"} ${label}`,
+                    disabled: direction < 0 ? i === 0 : i === blocks.length - 1,
+                    onclick: (e) => {
+                      e.stopPropagation();
+                      moveBlock(i, direction);
+                    },
+                  },
+                  arrow,
+                ),
+              ),
+            );
+          }),
+        );
+      }
+
+      function renderBlockEditor(ctx) {
+        const box = $("blockEditor");
+        const b = currentBlock();
+        if (!b) {
+          box.replaceChildren(
+            el("p", { class: "muted" }, "Select or add a block."),
+          );
+          return;
+        }
+        const paddingName = b.kind === "padding"
+          ? paddingNamesByBlock(ctx).get(b.id)?.join(", ")
+          : null;
+        const parts = [
+          el(
+            "div",
+            { class: "row" },
+            el(
+              "label",
+              {},
+              "Name ",
+              el("input", {
+                value: paddingName || b.name,
+                readOnly: Boolean(paddingName),
+                title: paddingName
+                  ? "Generated from the mnemonic name and reserved bit position."
+                  : "",
+                oninput: (e) => {
+                  b.name = e.target.value;
+                  refresh("blockEditor");
+                },
+              }),
+            ),
+            el("span", { class: "kind " + b.kind }, KIND_LABEL[b.kind]),
+            el("button", { onclick: () => deleteBlock(b) }, "Delete block"),
+          ),
+          el(
+            "div",
+            { class: "row" },
+            el(
+              "label",
+              {},
+              "Start bit ",
+              el("input", {
+                type: "number",
+                min: 0,
+                max: 63,
+                class: "narrow",
+                value: b.startBit,
+                placeholder: "Auto",
+                title: "Most significant bit; leave empty for automatic placement.",
+                oninput: (e) => {
+                  b.startBit = e.target.value;
+                  refresh("blockEditor");
+                },
+              }),
+            ),
+            el(
+              "label",
+              {},
+              el("input", {
+                type: "checkbox",
+                checked: b.required,
+                onchange: (e) => {
+                  b.required = e.target.checked;
+                  refresh("blockEditor");
+                },
+              }),
+              " Required in every mnemonic",
+            ),
+            el("span", { class: "small muted" },
+              "Start bit fixes the most significant bit of the first occurrence; later occurrences are automatic. Unused bits are zero."),
+          ),
+        ];
+
+        if (b.kind === "list") {
+          parts.push(
+            el(
+              "div",
+              { class: "row" },
+              el(
+                "label",
+                {},
+                "Width ",
+                el("input", {
+                  class: "narrow",
+                  value: b.widthOverride,
+                  placeholder: "auto",
+                  title:
+                    "Empty = bits needed for the codes; a larger value adds spare bits",
+                  oninput: (e) => {
+                    b.widthOverride = e.target.value;
+                    refresh("blockEditor");
+                  },
+                }),
+              ),
+            ),
+          );
+          const rows = b.items.map((it, i) =>
+            el(
+              "tr",
+              {},
+              el("td", {}, String(i + 1)),
+              el(
+                "td",
+                {},
+                el("input", {
+                  value: it.name,
+                  placeholder: "name",
+                  oninput: (e) => {
+                    it.name = e.target.value;
+                    refresh("blockEditor");
+                  },
+                }),
+              ),
+              el(
+                "td",
+                {},
+                el("input", {
+                  class: "code",
+                  value: it.code,
+                  placeholder: `auto: ${i}`,
+                  title: "Empty = position in the list",
+                  oninput: (e) => {
+                    it.code = e.target.value;
+                    refresh("blockEditor");
+                  },
+                }),
+              ),
+              el("td", { class: "bin" }, el("span", { tabIndex: 0 })),
+              el(
+                "td",
+                {},
+                el(
+                  "button",
+                  {
+                    class: "mini",
+                    title: "Move up",
+                    disabled: i === 0,
+                    onclick: () => moveItem(b, i, -1),
+                  },
+                  "↑",
+                ),
+                el(
+                  "button",
+                  {
+                    class: "mini",
+                    title: "Move down",
+                    disabled: i === b.items.length - 1,
+                    onclick: () => moveItem(b, i, 1),
+                  },
+                  "↓",
+                ),
+                el(
+                  "button",
+                  {
+                    class: "mini",
+                    title: "Delete item",
+                    onclick: () => deleteItem(b, i),
+                  },
+                  "✕",
+                ),
+              ),
+            ),
+          );
+          parts.push(
+            el(
+              "table",
+              { class: "items" },
+              el(
+                "thead",
+                {},
+                el(
+                  "tr",
+                  {},
+                  el("th", {}, "#"),
+                  el("th", {}, "Name"),
+                  el("th", {}, "Code"),
+                  el("th", {}, "Binary"),
+                  el("th", {}),
+                ),
+              ),
+              el("tbody", {}, ...rows),
+            ),
+          );
+          const bulk = el("input", {
+            class: "bulk",
+            placeholder: "R0..R15 or LD, ST, ADD=%1000",
+          });
+          const bulkMsg = el("span", { class: "error small" });
+          const addItems = () => {
+            const r = parseBulk(bulk.value);
+            if (r.error) {
+              bulkMsg.textContent = r.error;
+              return;
+            }
+            b.items.push(...r.items.map((x) => ({ id: newId(), ...x })));
+            refresh();
+            const again = $("blockEditor").querySelector("input.bulk");
+            if (again) again.focus();
+          };
+          bulk.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") addItems();
+          });
+          parts.push(
+            el(
+              "div",
+              { class: "row" },
+              bulk,
+              el("button", { onclick: addItems }, "Add items"),
+            ),
+            bulkMsg,
+          );
+        } else {
+          const row = el(
+            "div",
+            { class: "row" },
+            el(
+              "label",
+              {},
+              "Width ",
+              el("input", {
+                type: "number",
+                min: 1,
+                max: 64,
+                class: "narrow",
+                value: b.width,
+                oninput: (e) => {
+                  b.width = e.target.value;
+                  refresh("blockEditor");
+                },
+              }),
+              " bits",
+            ),
+          );
+          if (b.kind === "number") {
+            row.append(
+              el(
+                "label",
+                {},
+                "Interpretation ",
+                el(
+                  "select",
+                  {
+                    onchange: (e) => {
+                      b.numberMode = e.target.value;
+                      b.signed = b.numberMode === "signed";
+                      refresh();
+                    },
+                  },
+                  ...NUMBER_MODES.map((mode) =>
+                    el("option", { value: mode, selected: b.numberMode === mode }, mode),
+                  ),
+                ),
+              ),
+              el("span", { class: "small muted" },
+                "Raw displays bits in binary (up to 8 bits) or hexadecimal."),
+            );
+          } else if (b.kind === "const") {
+            row.append(
+              el(
+                "label",
+                {},
+                "Value ",
+                el("input", {
+                  class: "code",
+                  value: b.value,
+                  placeholder: "%01",
+                  oninput: (e) => {
+                    b.value = e.target.value;
+                    refresh("blockEditor");
+                  },
+                }),
+              ),
+            );
+          } else {
+            row.append(
+              el("span", { class: "small muted" }, "Always encoded as zero."),
+            );
+          }
+          parts.push(row);
+        }
+        box.replaceChildren(...parts);
+      }
+
+      function renderBlockInfo(ctx) {
+        const box = $("blockInfo");
+        const b = currentBlock();
+        if (!b) {
+          box.replaceChildren();
+          return;
+        }
+        const info = ctx.infos.get(b.id);
+        const used = ctx.usage.get(b.id) || 0;
+        let width =
+          info.width === null
+            ? "Width: unknown."
+            : `Width: ${plural(info.width, "bit")}`;
+        if (b.kind === "list" && info.width !== null)
+          width +=
+            info.width === info.auto ? " (auto)." : ` (${info.auto} needed).`;
+        else if (info.width !== null) width += ".";
+        const uses = state.mnemonics.flatMap((m) => {
+          const slots = m.slots
+            .map((slot, index) => ({ slot, index }))
+            .filter(({ slot }) => slot.blockId === b.id);
+          if (!slots.length) return [];
+          const layout = ctx.layouts.get(m.id);
+          return [
+            el(
+              "li",
+              {},
+              el(
+                "button",
+                {
+                  type: "button",
+                  onclick: () => {
+                    state.selectedMnemonic = m.id;
+                    refresh();
+                    $("mnemonicList").scrollIntoView({ block: "nearest" });
+                  },
+                },
+                mnemonicDisplayName(m),
+              ),
+              ...slots.map(({ slot, index }) => {
+                const placed = layout.ok
+                  ? layout.placed.find((p) => p.slot.id === slot.id)
+                  : null;
+                const label = placed?.label || slot.label.trim() || b.name || "(unnamed)";
+                return el(
+                  "span",
+                  { class: "small" },
+                  `Slot ${index + 1}: ${label} · ${placed ? `bits ${bitRange(placed)}` : "position unavailable"}`,
+                );
+              }),
+            ),
+          ];
+        });
+        box.replaceChildren(...[
+          el(
+            "p",
+            { class: "small" },
+            `${width} Used in ${plural(used, "mnemonic slot")}.`,
+          ),
+          uses.length
+            ? el("div", { class: "block-usage" }, el("h3", {}, "Used by"), el("ul", {}, ...uses))
+            : null,
+          messageList(info.errors, "error") || "",
+          messageList(info.warnings, "warning") || "",
+        ].filter(Boolean));
+        if (b.kind === "list") {
+          const rows = $("blockEditor").querySelectorAll(
+            "table.items tbody tr",
+          );
+          b.items.forEach((it, i) => {
+            const cell = rows[i] && rows[i].cells[3].firstElementChild;
+            if (cell) {
+              const value =
+                info.codes.has(it.id) && info.width !== null
+                  ? "%" + bin(info.codes.get(it.id), info.width)
+                  : "—";
+              cell.textContent = value;
+              cell.title = value;
+            }
+          });
+        }
+      }
+
+      function renderMnemonicList(ctx) {
+        const groups = [...new Map(
+          state.mnemonics.map((m) => [mnemonicGroupId(m), m]),
+        ).values()];
+        $("mnemonicList").replaceChildren(
+          ...groups.map((representative) => {
+            const forms = mnemonicForms(representative);
+            const m = forms.find((form) => form.id === state.selectedMnemonic) || forms[0];
+            const btn = el(
+              "button",
+              {
+                class:
+                  "mn" + (m.id === state.selectedMnemonic ? " selected" : ""),
+                title: "Click to edit. You can also drop a block here.",
+                onclick: () => {
+                  state.selectedMnemonic = m.id;
+                  refresh();
+                },
+                ondragover: (e) => {
+                  if (dragData && (dragData.type === "block" || dragData.type === "padding")) {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = "copy";
+                    btn.classList.add("over");
+                  }
+                },
+                ondragleave: () => btn.classList.remove("over"),
+                ondrop: (e) => {
+                  e.preventDefault();
+                  const d = dragData;
+                  endDrag();
+                  if (d && (d.type === "block" || d.type === "padding")) {
+                    state.selectedMnemonic = m.id;
+                    if (d.type === "padding") addPaddingSlot(m, m.slots.length);
+                    else addSlot(m, d.id, m.slots.length);
+                  }
+                },
+              },
+              m.name || "(unnamed)",
+              forms.every((form) => ctx.layouts.get(form.id).valid)
+                ? null : el("span", { class: "error" }, " ⚠"),
+            );
+            return el("li", {}, btn);
+          }),
+        );
+      }
+
+      function renderMnemonicEditor(ctx) {
+        const box = $("mnemonicEditor");
+        const m = currentMnemonic();
+        if (!m) {
+          box.replaceChildren(
+            el("p", { class: "muted" }, "Select or add a mnemonic."),
+          );
+          return;
+        }
+        const slotLabels = new Map(
+          ctx.layouts.get(m.id).placed.map((p) => [p.slot.id, p.label]),
+        );
+        const zone = el("div", { id: "slotZone" });
+        const chips = m.slots.map((sl, i) => {
+          const b = blockById(sl.blockId);
+          const info = b && ctx.infos.get(b.id);
+          const slotLabel =
+            b?.kind === "padding"
+              ? slotLabels.get(sl.id) || `${m.name.trim() || "(unnamed)"}/RESERVED`
+              : sl.label;
+          const chip = el("div", {
+            class: "chip",
+            bg: b ? b.color : "#eeeeee",
+          });
+          const handle = el(
+            "span",
+            {
+              class: "handle",
+              draggable: true,
+              title: "Drag to move",
+              ondragstart: (e) => {
+                startDrag(
+                  e,
+                  { type: "slot", mnemonic: m.id, index: i },
+                  "move",
+                );
+                e.dataTransfer.setDragImage(chip, 10, 10);
+              },
+              ondragend: endDrag,
+            },
+            "⠿",
+          );
+          chip.append(
+            handle,
+            el("input", {
+              class:
+                b?.kind === "padding" ? "slabel autoPaddingName" : "slabel",
+              value: slotLabel,
+              readOnly: b?.kind === "padding",
+              placeholder: b ? b.name : "?",
+              title: b?.kind === "padding"
+                ? "Padding name is generated from the mnemonic and bit position."
+                : "Slot name, e.g. Rn",
+              oninput: (e) => {
+                sl.label = e.target.value;
+                refresh("mnemonicEditor");
+              },
+            }),
+            b?.kind === "padding"
+              ? el("label", { class: "small padding-width" }, "Width ",
+                  el("input", {
+                    type: "number",
+                    min: 1,
+                    max: 64,
+                    class: "narrow",
+                    value: b.width,
+                    ariaLabel: `Padding width for slot ${i + 1}`,
+                    oninput: (e) => setPaddingWidth(sl, e.target.value),
+                  }),
+                  " bits")
+              : el("span", { class: "small" },
+                  b ? `${b.name} · ${info.width === null ? "?" : info.width} bits` : "deleted block"),
+          );
+          if (b && b.kind === "list") {
+            const selectedItem = defaultListItem(sl, b);
+            const pin = el(
+              "select",
+              {
+                title: "Select the list value for this mnemonic.",
+                onchange: (e) => {
+                  sl.pin = Number(e.target.value);
+                  refresh();
+                },
+              },
+              ...(selectedItem
+                ? []
+                : [el("option", { value: "", disabled: true }, "No items")]),
+              ...b.items.map((it) =>
+                el("option", { value: String(it.id) }, `= ${it.name || "?"}`),
+              ),
+            );
+            pin.value = String(selectedItem?.id ?? "");
+            chip.append(pin);
+          }
+          chip.append(
+            el(
+              "button",
+              {
+                class: "mini",
+                title: "Move left",
+                disabled: i === 0,
+                onclick: () => moveSlot(m, i, i - 1),
+              },
+              "←",
+            ),
+            el(
+              "button",
+              {
+                class: "mini",
+                title: "Move right",
+                disabled: i === m.slots.length - 1,
+                onclick: () => moveSlot(m, i, i + 2),
+              },
+              "→",
+            ),
+            el(
+              "button",
+              {
+                class: "mini",
+                title: "Remove slot",
+                onclick: () => {
+                  m.slots.splice(i, 1);
+                  for (const variant of m.comparisons) delete variant.values[sl.id];
+                  pruneGeneratedPadding();
+                  refresh();
+                },
+              },
+              "✕",
+            ),
+          );
+          return chip;
+        });
+        zone.append(
+          ...(chips.length
+            ? chips
+            : [
+                el(
+                  "span",
+                  { class: "muted" },
+                  "Drop blocks here. The first slot takes the most significant bits.",
+                ),
+              ]),
+        );
+        zone.addEventListener("dragover", (e) => {
+          if (
+            !dragData ||
+            (dragData.type === "slot" && dragData.mnemonic !== m.id)
+          )
+            return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect =
+            dragData.type === "block" || dragData.type === "padding" ? "copy" : "move";
+          clearDropMarks();
+          zone.classList.add("over");
+          const idx = dropIndex(zone, e);
+          const target = zone.querySelectorAll(".chip")[idx];
+          if (target) target.classList.add("drop-before");
+          else zone.classList.add("drop-end");
+        });
+        zone.addEventListener("dragleave", (e) => {
+          if (!zone.contains(e.relatedTarget)) clearDropMarks();
+        });
+        zone.addEventListener("drop", (e) => {
+          e.preventDefault();
+          const d = dragData;
+          const idx = dropIndex(zone, e);
+          endDrag();
+          if (!d) return;
+          if (d.type === "padding") addPaddingSlot(m, idx);
+          else if (d.type === "block") addSlot(m, d.id, idx);
+          else if (d.mnemonic === m.id) moveSlot(m, d.index, idx);
+        });
+        box.replaceChildren(
+          el(
+            "div",
+            { class: "row" },
+            el(
+              "label",
+              {},
+              "Name ",
+              el("input", {
+                value: m.name,
+                placeholder: "e.g. OP.mem",
+                oninput: (e) => {
+                  setMnemonicName(m, e.target.value);
+                  refresh("mnemonicEditor");
+                },
+              }),
+            ),
+            el("button", { onclick: () => duplicateMnemonic(m) }, "Duplicate"),
+            el("button", { onclick: () => deleteMnemonic(m) }, "Delete"),
+          ),
+          el(
+            "div",
+            { class: "row" },
+            el("strong", {}, "Forms"),
+            ...mnemonicForms(m).map((form) =>
+              el(
+                "button",
+                {
+                  class: "mn" + (form.id === m.id ? " selected" : ""),
+                  onclick: () => {
+                    state.selectedMnemonic = form.id;
+                    refresh();
+                  },
+                },
+                formName(form),
+              ),
+            ),
+            el("button", {
+              class: "mini",
+              title: "Add form",
+              ariaLabel: "Add form",
+              onclick: () => addMnemonicForm(m),
+            }, "+"),
+            mnemonicForms(m).length > 1
+              ? el("button", {
+                  class: "mini",
+                  title: "Remove current form",
+                  ariaLabel: "Remove current form",
+                  onclick: () => deleteMnemonicForm(m),
+                }, "−")
+              : null,
+          ),
+          ...(mnemonicForms(m).length > 1
+            ? [el(
+                "div",
+                { class: "row" },
+                el("label", {}, "Form name ", el("input", {
+                  value: m.formName,
+                  placeholder: formName(m),
+                  oninput: (e) => {
+                    m.formName = e.target.value;
+                    refresh("mnemonicEditor");
+                  },
+                  onchange: () => refresh(),
+                })),
+              )]
+            : []),
+          el(
+            "div",
+            { class: "row" },
+            ...[
+              ["Addressing mode", "addressing", "e.g. immediate, indexed"],
+              ["Bytes", "bytes", "e.g. 2"],
+              ["Cycles", "cycles", "e.g. 2 (3 if page crossed)"],
+              ["Flags", "flags", "e.g. N Z C V"],
+            ].map(([label, key, placeholder]) =>
+              el(
+                "label",
+                {},
+                label,
+                " ",
+                el("input", {
+                  value: m[key],
+                  placeholder,
+                  oninput: (e) => {
+                    m[key] = e.target.value;
+                    refresh("mnemonicEditor");
+                  },
+                }),
+              ),
+            ),
+          ),
+          el(
+            "label",
+            {},
+            "Operation",
+            el("textarea", {
+              class: "docOperation",
+              rows: 1,
+              value: m.operation,
+              placeholder: "e.g. Rn = Ra + Rb",
+              oninput: (e) => {
+                m.operation = e.target.value;
+                refresh("mnemonicEditor");
+              },
+            }),
+          ),
+          el(
+            "label",
+            {},
+            "Description",
+            el("textarea", {
+              class: "docDescription",
+              value: m.description,
+              placeholder: "Describe the instruction behavior or notes.",
+              oninput: (e) => {
+                m.description = e.target.value;
+                refresh("mnemonicEditor");
+              },
+            }),
+          ),
+          zone,
+        );
+      }
+
+      function renderMnemonicInfo(ctx) {
+        const box = $("mnemonicInfo");
+        const m = currentMnemonic();
+        if (!m) {
+          box.replaceChildren();
+          return;
+        }
+        box.replaceChildren(
+          ...mnemonicForms(m).map((form) => {
+            const lay = ctx.layouts.get(form.id);
+            return el(
+              "section",
+              {},
+              el("h3", {}, formName(form)),
+              messageList(lay.errors, "error"),
+              messageList(lay.warnings, "warning"),
+              renderDiagram(lay, null),
+              lay.ok && lay.placed.length
+                ? el(
+                    "p",
+                    { class: "small" },
+                    "Decode pattern (x = variable bit): ",
+                    el("code", {}, patternText(lay)),
+                  )
+                : null,
+            );
+          }),
+        );
+        alignDiagrams(box);
+      }
+
+      function updatePaddingSlotLabels(ctx) {
+        const m = currentMnemonic();
+        if (!m) return;
+        const inputs = $("mnemonicEditor").querySelectorAll("input.slabel");
+        m.slots.forEach((slot, index) => {
+          const block = blockById(slot.blockId);
+          if (block?.kind !== "padding") return;
+          const placed = ctx.layouts.get(m.id).placed.find(
+            (p) => p.slot.id === slot.id,
+          );
+          inputs[index].value =
+            placed?.label || `${m.name.trim() || "(unnamed)"}/RESERVED`;
+        });
+      }
+
+      function renderEncInputs(ctx) {
+        const box = $("encInputs");
+        const m = currentEncodeMnemonic();
+        const selector = el(
+          "label",
+          { class: "encField" },
+          el("span", {}, "Mnemonic to encode"),
+          el(
+            "select",
+            {
+              value: String(state.selectedEncodeMnemonic ?? ""),
+              onchange: (e) => {
+                state.selectedEncodeMnemonic = Number(e.target.value);
+                refresh();
+              },
+            },
+            ...state.mnemonics.map((mnemonic) =>
+              el("option", {
+                value: String(mnemonic.id),
+                selected: mnemonic.id === state.selectedEncodeMnemonic,
+              }, mnemonicDisplayName(mnemonic)),
+            ),
+          ),
+        );
+        if (!m) {
+          box.replaceChildren(
+            selector,
+            el("p", { class: "muted" }, "Add a mnemonic to encode."),
+          );
+          return;
+        }
+        const lay = ctx.layouts.get(m.id);
+        const variants = [
+          { assemblyLine: m.assemblyLine, values: null, main: true },
+          ...m.comparisons.map((variant) => ({ ...variant, main: false })),
+        ];
+        const groups = variants.map((variant, index) => {
+          const setAssemblyLine = (value) => {
+            if (variant.main) m.assemblyLine = value;
+            else m.comparisons[index - 1].assemblyLine = value;
+            renderEncOutput(computeAll());
+            save();
+          };
+          const setValue = (slot, value) => {
+            if (variant.main) slot.encValue = value;
+            else variant.values[slot.id] = value;
+            refresh("encInputs");
+          };
+          const reference = el(
+            "div",
+            { class: "encReferenceRow" },
+            el(
+              "label",
+              { class: "encReference" },
+              "Assembly line (reference only; not parsed)",
+              el("input", {
+                type: "text",
+                value: variant.assemblyLine,
+                placeholder: "",
+                oninput: (e) => setAssemblyLine(e.target.value),
+              }),
+            ),
+            el(
+              "button",
+              {
+                class: "mini",
+                title: variant.main ? "Add comparison" : "Remove comparison",
+                "aria-label": variant.main
+                  ? "Add comparison"
+                  : `Remove encoding ${index + 1}`,
+                onclick: () => {
+                  if (variant.main) {
+                    m.comparisons.push({
+                      assemblyLine: "",
+                      values: Object.fromEntries(
+                        m.slots.map((slot) => {
+                          const block = blockById(slot.blockId);
+                          const fallback = block?.kind === "list"
+                            ? defaultListItem(slot, block)
+                            : null;
+                          return [slot.id, slot.encValue || (fallback ? String(fallback.id) : "")];
+                        }),
+                      ),
+                    });
+                  } else {
+                    m.comparisons.splice(index - 1, 1);
+                  }
+                  refresh();
+                },
+              },
+              variant.main ? "+" : "−",
+            ),
+          );
+          const controls = lay.valid
+            ? lay.placed.map((p) => {
+                const b = p.block;
+                const sl = p.slot;
+                const value = variant.values?.[sl.id] ?? sl.encValue;
+                let control;
+                if (b.kind === "const")
+                  control = el("input", {
+                    value: codeText(p.info.value, p.w),
+                    disabled: true,
+                  });
+                else if (b.kind === "padding")
+                  control = el("input", { value: "0", disabled: true });
+                else if (b.kind === "list") {
+                  const selected = value === ""
+                    ? defaultListItem(sl, b)
+                    : b.items.find((it) => String(it.id) === value);
+                  control = el(
+                    "select",
+                    {
+                      onchange: (e) => setValue(sl, e.target.value),
+                    },
+                    ...(selected
+                      ? []
+                      : [el("option", { value: "", disabled: true }, "Selected item unavailable")]),
+                    ...b.items.map((it) =>
+                      el("option", { value: String(it.id) }, it.name || "?"),
+                    ),
+                  );
+                  control.value = String(selected?.id ?? "");
+                } else {
+                  control = el("input", {
+                    value,
+                    placeholder: "0",
+                    oninput: (e) => setValue(sl, e.target.value),
+                  });
+                }
+                return el(
+                  "label",
+                  { class: "encField" },
+                  el(
+                    "span",
+                    {},
+                    b.kind === "padding"
+                      ? `${p.label} (${p.w} bits)`
+                      : `${p.label} (${b.name}, ${p.w} bits)`,
+                  ),
+                  control,
+                );
+              })
+            : [
+                el(
+                  "p",
+                  { class: "muted" },
+                  lay.errors.length
+                    ? "Fix the selected mnemonic's errors first."
+                    : "Add slots to the mnemonic first.",
+                ),
+              ];
+          return el(
+            "div",
+            { class: "encVariant" },
+            el("strong", {}, `Encoding ${index + 1}`),
+            reference,
+            ...controls,
+          );
+        });
+        box.replaceChildren(selector, ...groups);
+      }
+
+      function renderEncOutput(ctx) {
+        const box = $("encOutput");
+        const m = currentEncodeMnemonic();
+        if (!m) {
+          box.replaceChildren();
+          return;
+        }
+        const lay = ctx.layouts.get(m.id);
+        if (!lay.valid) {
+          box.replaceChildren(
+            el(
+              "p",
+              { class: "muted" },
+              lay.errors.length
+                ? "Fix the selected mnemonic's errors first."
+                : "Add slots to the mnemonic first.",
+            ),
+          );
+          return;
+        }
+        const variants = [
+          { assemblyLine: m.assemblyLine, values: null },
+          ...m.comparisons,
+        ];
+        const results = variants.map((variant, index) => {
+          const variantLayout = mnemonicLayout(
+            {
+              ...m,
+              slots: m.slots.map((slot) => {
+                const value = variant.values?.[slot.id] ?? slot.encValue;
+                const block = blockById(slot.blockId);
+                const item = block?.kind === "list"
+                  ? block.items.find((entry) => String(entry.id) === value)
+                  : null;
+                return item ? { ...slot, pin: item.id } : slot;
+              }),
+            },
+            ctx.infos,
+            ctx.W,
+          );
+          const { word, errors } = encodeWord(variantLayout, variant.values);
+          if (errors.length)
+            return {
+              word: null,
+              view: el(
+                "div",
+                { class: "encVariant" },
+                el("strong", {}, `Encoding ${index + 1}`),
+                messageList(errors, "error"),
+              ),
+            };
+          const hexText = hex(word, lay.width);
+          return {
+            word,
+            view: el(
+              "div",
+              { class: "encVariant" },
+              el("strong", {}, `Encoding ${index + 1}`),
+              ...(variant.assemblyLine.trim()
+                ? [
+                    el(
+                      "div",
+                      {},
+                      "Assembly line: ",
+                      el("code", {}, variant.assemblyLine),
+                    ),
+                  ]
+                : []),
+              el("div", {}, el("code", {}, asmText(m, variantLayout, word))),
+              el(
+                "div",
+                {},
+                "Hex: ",
+                el("code", {}, hexText),
+                " ",
+                el(
+                  "button",
+                  {
+                    class: "mini",
+                    onclick: () => copyText(hexText),
+                  },
+                  "Copy",
+                ),
+              ),
+              el(
+                "div",
+                {},
+                "Binary: ",
+                el(
+                  "code",
+                  {},
+                  variantLayout.segments
+                    .map((s) => bin(segBits(word, s), s.w))
+                    .join(" "),
+                ),
+              ),
+              renderDiagram(variantLayout, word),
+            ),
+          };
+        });
+        const comparisons = results.slice(1).map((result, index) => {
+          if (result.word === null) return null;
+          const matching = results
+            .slice(0, index + 1)
+            .findIndex((previous) => previous.word === result.word);
+          return el(
+            "p",
+            { class: "small" },
+            matching >= 0
+              ? `Encoding ${index + 2} matches Encoding ${matching + 1}.`
+              : `Encoding ${index + 2} does not match the previous encodings.`,
+          );
+        });
+        box.replaceChildren(...results.map((result) => result.view), ...comparisons.filter(Boolean));
+      }
+
+      function renderDecode(ctx) {
+        const box = $("decOutput");
+        const word = parseWord($("decInput").value);
+        if (word === null) {
+          box.replaceChildren(
+            el("p", { class: "muted" }, "Enter a word to decode."),
+          );
+          return;
+        }
+        if (word === undefined) {
+          box.replaceChildren(
+            el(
+              "p",
+              { class: "error" },
+              "Not a valid number. Use $…, 0x…, %…, 0b… or hex digits.",
+            ),
+          );
+          return;
+        }
+        if (ctx.W === null) {
+          box.replaceChildren(
+            el("p", { class: "error" }, "Set a valid word width first."),
+          );
+          return;
+        }
+        if (word > maskOf(ctx.W)) {
+          box.replaceChildren(
+            el(
+              "p",
+              { class: "error" },
+              `The word is wider than ${ctx.W} bits.`,
+            ),
+          );
+          return;
+        }
+        const valid = state.mnemonics.filter(
+          (m) => ctx.layouts.get(m.id).valid,
+        );
+        const skipped = state.mnemonics.length - valid.length;
+        const matches = valid.filter((m) => {
+          const l = ctx.layouts.get(m.id);
+          return (word & l.fixedMask) === l.fixedValue;
+        });
+        const parts = [];
+        if (matches.length > 1)
+          parts.push(
+            el(
+              "p",
+              { class: "warning" },
+              `Ambiguous: ${matches.length} mnemonics match this word.`,
+            ),
+          );
+        for (const m of matches) {
+          const lay = ctx.layouts.get(m.id);
+          const unknown = lay.placed.filter(
+            (p) =>
+              p.block.kind === "list" &&
+              !p.fixed &&
+              !itemForCode(p, segBits(word, p)),
+          );
+          parts.push(
+            el("h3", {}, mnemonicDisplayName(m)),
+            el("div", {}, el("code", {}, asmText(m, lay, word))),
+            messageList(
+              unknown.map(
+                (p) =>
+                  `${p.label}: code ${codeText(segBits(word, p), p.w)} is not an item of "${p.block.name}".`,
+              ),
+              "warning",
+            ),
+            renderDiagram(lay, word),
+          );
+        }
+        if (!matches.length)
+          parts.push(
+            el("p", { class: "muted" }, "No mnemonic matches this word."),
+          );
+        if (skipped)
+          parts.push(
+            el(
+              "p",
+              { class: "muted small" },
+              `${plural(skipped, "mnemonic")} with errors or without slots were skipped.`,
+            ),
+          );
+        box.replaceChildren(...parts.filter(Boolean));
+      }
+
+      function renderCheck(ctx) {
+        const errors = [];
+        const warnings = [];
+        for (const b of state.blocks) {
+          const info = ctx.infos.get(b.id);
+          if (info.errors.length)
+            errors.push(
+              `Block "${b.name || "(unnamed)"}": ${info.errors.join(" ")}`,
+            );
+        }
+        for (const m of state.mnemonics) {
+          const lay = ctx.layouts.get(m.id);
+          if (lay.errors.length)
+            errors.push(
+              `Mnemonic "${mnemonicDisplayName(m)}": ${lay.errors.join(" ")}`,
+            );
+          else if (!lay.placed.length)
+            warnings.push(`Mnemonic "${mnemonicDisplayName(m)}" has no slots.`);
+        }
+        const valid = state.mnemonics.filter(
+          (m) => ctx.layouts.get(m.id).valid,
+        );
+        for (let i = 0; i < valid.length; i++) {
+          for (let j = i + 1; j < valid.length; j++) {
+            const a = ctx.layouts.get(valid[i].id);
+            const b = ctx.layouts.get(valid[j].id);
+            const common = a.fixedMask & b.fixedMask;
+            if (((a.fixedValue ^ b.fixedValue) & common) === 0n) {
+              warnings.push(
+                `"${mnemonicDisplayName(valid[i])}" and "${mnemonicDisplayName(valid[j])}" can produce the same word: no fixed bit tells them apart.`,
+              );
+            }
+          }
+        }
+        const summary = el(
+          "p",
+          { class: "small" },
+          `${plural(state.blocks.length, "block")}, ${plural(new Set(state.mnemonics.map(mnemonicGroupId)).size, "mnemonic")}.`,
+        );
+        const ok =
+          !errors.length && !warnings.length
+            ? el("p", {}, "No problems found.")
+            : null;
+        $("checkOutput").replaceChildren(
+          ...[
+            summary,
+            ok,
+            messageList(errors, "error"),
+            messageList(warnings, "warning"),
+          ].filter(Boolean),
+        );
+      }
+
+      function refresh(skip) {
+        const ctx = computeAll();
+        renderPalette(ctx);
+        if (skip !== "blockEditor") renderBlockEditor(ctx);
+        renderBlockInfo(ctx);
+        renderMnemonicList(ctx);
+        if (skip !== "mnemonicEditor") renderMnemonicEditor(ctx);
+        else updatePaddingSlotLabels(ctx);
+        renderMnemonicInfo(ctx);
+        if (skip !== "encInputs") renderEncInputs(ctx);
+        renderEncOutput(ctx);
+        renderDecode(ctx);
+        renderCheck(ctx);
+        save();
+      }
+
+      // ---------- Markdown ----------
+
+      const mdCell = (s) => String(s).replace(/\|/g, "\\|");
+
+      function generateMarkdown(ctx) {
+        const out = [
+          `# ${state.docTitle || "Instruction Set Reference"}`,
+          "",
+        ];
+        if (state.docIntro) out.push(state.docIntro, "");
+        out.push(
+          "## Instruction encoding",
+          "",
+          `Word width: ${ctx.W === null ? "?" : ctx.W} bits.`,
+          "",
+          "### Building blocks",
+          "",
+        );
+        for (const b of state.blocks) {
+          if (b.kind === "padding") continue;
+          const info = ctx.infos.get(b.id);
+          out.push(
+            `#### ${b.name || "(unnamed)"} (${KIND_LABEL[b.kind]}, ${blockSummary(b, info)})`,
+            "",
+          );
+          if (info.errors.length)
+            out.push(...info.errors.map((e) => `- Error: ${e}`), "");
+          if (b.kind === "list" && b.items.length) {
+            out.push("| Code | Item |", "| ---- | ---- |");
+            for (const it of b.items) {
+              const code =
+                info.codes.has(it.id) && info.width !== null
+                  ? "%" + bin(info.codes.get(it.id), info.width)
+                  : "?";
+              out.push(`| ${code} | ${mdCell(it.name || "?")} |`);
+            }
+            out.push("");
+          }
+        }
+        out.push("### Mnemonics", "");
+        for (const m of state.mnemonics) {
+          const lay = ctx.layouts.get(m.id);
+          out.push(`#### ${mnemonicDisplayName(m)}`, "");
+          for (const [label, value] of [
+            ["Addressing mode", m.addressing],
+            ["Operation", m.operation],
+            ["Bytes", m.bytes],
+            ["Cycles", m.cycles],
+            ["Flags", m.flags],
+          ])
+            if (value) {
+              const text = mdCell(value);
+              out.push(`- ${label}: ${label === "Operation" ? text.replace(/\n/g, "  \n  ") : text}`);
+            }
+          if (m.description) out.push("", mdCell(m.description));
+          if ([m.addressing, m.operation, m.bytes, m.cycles, m.flags, m.description].some(Boolean))
+            out.push("");
+          if (lay.errors.length) {
+            out.push(...lay.errors.map((e) => `- Error: ${e}`), "");
+            continue;
+          }
+          if (!lay.placed.length) {
+            out.push("No slots.", "");
+            continue;
+          }
+          out.push(
+            "```",
+            lay.segments
+              .map((s) =>
+                (s.free ? "unused" : s.block.kind === "padding"
+                  ? reservedLabel(s.hi, s.lo) : s.label) + `(${s.w})`)
+              .join(" "),
+            "```",
+            "",
+          );
+          out.push(
+            "| Bits | Slot | Block | Value |",
+            "| ---- | ---- | ----- | ----- |",
+          );
+          for (const s of lay.segments) {
+            if (s.free) {
+              out.push(`| ${bitRange(s)} | — | unused | 0 |`);
+              continue;
+            }
+            let value = "";
+            if (s.block.kind === "const") value = codeText(s.info.value, s.w);
+            else if (s.block.kind === "padding") value = "0";
+            else if (s.block.kind === "list") value = listDefaultText(s);
+            const label = s.block.kind === "padding"
+              ? reservedLabel(s.hi, s.lo) : s.label;
+            const blockName = s.block.kind === "padding" ? label : s.block.name;
+            out.push(
+              `| ${bitRange(s)} | ${mdCell(label)} | ${mdCell(blockName)} | ${mdCell(value)} |`,
+            );
+          }
+          out.push("");
+        }
+        return out.join("\n");
+      }
+
+      const htmlText = (value) =>
+        String(value ?? "").replace(/[&<>\"']/g, (c) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '\"': "&quot;",
+          "'": "&#39;",
+        })[c]);
+
+      function generatePrintHtml(ctx) {
+        const title = htmlText(state.docTitle || "Instruction Set Reference");
+        const intro = state.docIntro
+          ? `<p class="document-intro">${htmlText(state.docIntro)}</p>`
+          : "";
+        const instructionRows = state.mnemonics.map((m) => {
+          const lay = ctx.layouts.get(m.id);
+          const pattern = lay.valid ? patternText(lay) : "Invalid layout";
+          return `<tr><td>${htmlText(mnemonicDisplayName(m))}</td><td>${htmlText(m.addressing)}</td><td>${htmlText(m.bytes)}</td><td>${htmlText(m.cycles)}</td><td>${htmlText(m.flags)}</td><td><code>${htmlText(pattern)}</code></td></tr>`;
+        }).join("");
+        const instructionDetails = state.mnemonics.map((m) => {
+          const lay = ctx.layouts.get(m.id);
+          const pattern = lay.valid ? patternText(lay) : lay.errors.join(" ");
+          const fields = lay.valid ? lay.placed.map((p) => {
+            let meaning = KIND_LABEL[p.block.kind];
+            if (p.block.kind === "const") meaning = `constant ${codeText(p.info.value, p.w)}`;
+            else if (p.block.kind === "padding") meaning = "zero padding";
+            else if (p.block.kind === "list") meaning = listDefaultText(p);
+            else if (p.block.kind === "number")
+              meaning = `${p.block.numberMode === "raw" ? "raw " : p.block.signed ? "signed " : ""}immediate`;
+            const blockName =
+              p.block.kind === "padding" ? p.label : p.block.name;
+            return `<tr><td>${htmlText(p.label)}</td><td>${htmlText(blockName)}</td><td>${htmlText(bitRange(p))}</td><td>${p.w}</td><td>${htmlText(meaning)}</td></tr>`;
+          }).join("") : "";
+          const metadata = [
+            ["Addressing mode", m.addressing],
+            ["Operation", m.operation],
+            ["Bytes", m.bytes],
+            ["Cycles", m.cycles],
+            ["Flags", m.flags],
+          ].filter(([, value]) => value).map(([label, value]) =>
+            `<span${label === "Operation" ? ' class="operation"' : ""}><b>${label}:</b> ${htmlText(value)}</span>`
+          ).join("");
+          return `<article><h2>${htmlText(mnemonicDisplayName(m))}</h2><div class="meta">${metadata}</div>${m.description ? `<p class="description">${htmlText(m.description)}</p>` : ""}<p><b>Decode pattern:</b> <code>${htmlText(pattern)}</code></p>${fields ? `<table><thead><tr><th>Field</th><th>Block</th><th>Position</th><th>Bits</th><th>Meaning</th></tr></thead><tbody>${fields}</tbody></table>` : ""}</article>`;
+        }).join("");
+        const lists = state.blocks.filter((b) => b.kind === "list").map((b) => {
+          const info = ctx.infos.get(b.id);
+          const rows = b.items.map((item) => {
+            const code = info.codes.has(item.id) && info.width !== null
+              ? "%" + bin(info.codes.get(item.id), info.width)
+              : "?";
+            return `<tr><td><code>${code}</code></td><td>${htmlText(item.name || "?")}</td></tr>`;
+          }).join("");
+          return `<article><h3>${htmlText(b.name || "(unnamed)")}</h3><table><thead><tr><th>Code</th><th>Value</th></tr></thead><tbody>${rows}</tbody></table></article>`;
+        }).join("");
+        return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${title}</title><style>
+          @page{size:landscape;margin:12mm}*{box-sizing:border-box}body{font:10pt/1.4 Arial,sans-serif;color:#111;margin:24px}h1{font-size:22pt;margin:0 0 4px}h2{font-size:14pt;margin:0 0 6px}h3{font-size:12pt}header{border-bottom:2px solid #222;margin-bottom:16px;padding-bottom:8px}.subtitle{color:#555}table{border-collapse:collapse;width:100%;margin:8px 0 14px}th,td{border:1px solid #888;padding:4px 6px;text-align:left;vertical-align:top}th{background:#eee}code{font-family:Consolas,monospace;white-space:nowrap}.meta{display:flex;flex-wrap:wrap;gap:4px 16px}.operation{white-space:pre-wrap}.document-intro,.description{white-space:pre-wrap;margin:6px 0}article{break-inside:avoid;border-bottom:1px solid #aaa;padding:8px 0}.toolbar{margin-bottom:16px}@media print{body{margin:0}.toolbar{display:none}}
+          </style></head><body><div class="toolbar"><button onclick="window.print()">Print</button></div><header><h1>${title}</h1><div class="subtitle">${ctx.W === null ? "Word width unset" : `${ctx.W}-bit encoding reference`}</div></header>${intro}<h2>Instruction summary</h2><table><thead><tr><th>Mnemonic</th><th>Addressing mode</th><th>Bytes</th><th>Cycles</th><th>Flags</th><th>Decode pattern</th></tr></thead><tbody>${instructionRows}</tbody></table><h2>Instruction details</h2>${instructionDetails}<h2>Value lists</h2>${lists || "<p>No lists defined.</p>"}</body></html>`;
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text).catch(() => {});
+          return;
+        }
+        const ta = el("textarea", { value: text });
+        document.body.append(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+
+      function saveProject() {
+        const data = {
+          format: "opcode-composer-project",
+          version: 1,
+          project: state,
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = el("a", { href: url, download: "opcode-project.json" });
+        document.body.append(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function loadProject(data) {
+        const project = data.project;
+        const object = (v) => v && typeof v === "object" && !Array.isArray(v);
+        const strings = (v, keys) =>
+          keys.every((key) => !Object.hasOwn(v, key) || typeof v[key] === "string");
+        const isId = (v) => Number.isInteger(v) && v > 0;
+        const ids = new Set();
+        const addId = (id) => {
+          if (!isId(id) || ids.has(id)) return false;
+          ids.add(id);
+          return true;
+        };
+        const valid =
+          data.version === 1 && object(project) && project.version === 1 &&
+          typeof project.wordWidth === "string" &&
+          typeof project.docTitle === "string" && typeof project.docIntro === "string" &&
+          isId(project.nextId) &&
+          (project.selectedBlock === null || isId(project.selectedBlock)) &&
+          (project.selectedMnemonic === null || isId(project.selectedMnemonic)) &&
+          (!Object.hasOwn(project, "selectedEncodeMnemonic") ||
+            project.selectedEncodeMnemonic === null || isId(project.selectedEncodeMnemonic)) &&
+          Array.isArray(project.blocks) && Array.isArray(project.mnemonics) &&
+          validMnemonicGroups(project.mnemonics) &&
+          project.blocks.every((b) =>
+            object(b) && addId(b.id) && typeof b.kind === "string" &&
+            Object.hasOwn(KIND_LABEL, b.kind) &&
+            validBlockConstraints(b) &&
+            strings(b, ["name", "widthOverride", "width", "value"]) &&
+            (!Object.hasOwn(b, "color") ||
+              (typeof b.color === "string" && /^#[0-9a-f]{6}$/i.test(b.color))) &&
+            (!Object.hasOwn(b, "numberMode") || NUMBER_MODES.includes(b.numberMode)) &&
+            typeof b.name === "string" && typeof b.width === "string" &&
+            typeof b.signed === "boolean" && Array.isArray(b.items) &&
+            b.items.every((item) =>
+              object(item) && addId(item.id) &&
+              typeof item.name === "string" && typeof item.code === "string",
+            ),
+          ) &&
+          project.mnemonics.every((m) =>
+            object(m) && addId(m.id) && typeof m.name === "string" &&
+            strings(m, ["addressing", "operation", "assemblyLine", "bytes", "cycles", "flags", "description"]) &&
+            Array.isArray(m.slots) && Array.isArray(m.comparisons) &&
+            m.slots.every((slot) =>
+              object(slot) && addId(slot.id) && isId(slot.blockId) &&
+              (slot.pin === null || isId(slot.pin)) &&
+              strings(slot, ["label", "blockName", "pinName", "encValue"]),
+            ) &&
+            m.comparisons.every((variant) =>
+              object(variant) && strings(variant, ["assemblyLine"]) &&
+              object(variant.values) &&
+              Object.entries(variant.values).every(([id, value]) =>
+                isId(Number(id)) && typeof value === "string",
+              ),
+            ),
+          );
+        if (!valid) throw new Error("The file contains invalid project data.");
+        const imported = sanitize(project);
+        imported.nextId = Math.max(imported.nextId, project.nextId);
+        if (!confirm("Replace the current workspace with this project? This cannot be undone."))
+          return;
+        state = imported;
+        $("wordWidth").value = state.wordWidth;
+        $("docTitle").value = state.docTitle;
+        $("docIntro").value = state.docIntro;
+        refresh();
+      }
+
+      function loadFile(raw) {
+        const data = JSON.parse(raw);
+        if (data?.format === "opcode-composer-project") loadProject(data);
+        else if (data?.format === "opcode-composer-lists") loadLists(data);
+        else if (data?.format === "opcode-composer-mnemonics") loadMnemonics(data);
+        else throw new Error("This is not a supported opcode composer file.");
+      }
+
+      function loadLists(data) {
+        if (
+          !data ||
+          data.format !== "opcode-composer-lists" ||
+          data.version !== 1 ||
+          !Array.isArray(data.blocks)
+        )
+          throw new Error("This is not a supported opcode lists file.");
+
+        if (data.blocks.some((b) => b && !validBlockConstraints(b)))
+          throw new Error("The file contains invalid block constraints.");
+        const imported = sanitize({ blocks: data.blocks }).blocks;
+        const ids = new Set();
+        const valid =
+          imported.length === data.blocks.length &&
+          imported.every(
+            (b, i) =>
+              b.kind === "list" &&
+              b.items.length ===
+                (Array.isArray(data.blocks[i]?.items)
+                  ? data.blocks[i].items.length
+                  : 0),
+          );
+        for (const b of imported) {
+          if (ids.has(b.id)) throw new Error("The file contains duplicate IDs.");
+          ids.add(b.id);
+          for (const item of b.items) {
+            if (ids.has(item.id)) throw new Error("The file contains duplicate IDs.");
+            ids.add(item.id);
+          }
+        }
+        if (!valid) throw new Error("The file contains invalid list data.");
+        if (!confirm("Replace all current lists with the lists in this file? List slots that refer to lists not in the file will be removed."))
+          return;
+
+        const currentLists = state.blocks.filter((b) => b.kind === "list");
+        const currentListIds = new Set(currentLists.map((b) => b.id));
+        const blockIdMap = new Map();
+        const itemIdMaps = new Map();
+        const replacements = imported.map((b) => {
+          const oldBlockId = b.id;
+          const oldItemIds = b.items.map((item) => item.id);
+          const copy = {
+            ...b,
+            id: newId(),
+            items: b.items.map((item) => ({ ...item, id: newId() })),
+          };
+          blockIdMap.set(oldBlockId, copy.id);
+          itemIdMaps.set(
+            oldBlockId,
+            new Map(oldItemIds.map((id, i) => [id, copy.items[i].id])),
+          );
+          return copy;
+        });
+
+        const remapListValue = (value, itemIds) => {
+          if (value === "") return value;
+          const id = itemIds.get(Number(value));
+          if (id === undefined)
+            throw new Error("An encoded list value is missing from the imported lists.");
+          return String(id);
+        };
+        const updatedMnemonics = state.mnemonics.map((mnemonic) => {
+          const itemMapsBySlot = new Map();
+          const slots = mnemonic.slots.flatMap((slot) => {
+            if (!currentListIds.has(slot.blockId)) return [slot];
+            const blockId = blockIdMap.get(slot.blockId);
+            if (blockId === undefined) return [];
+            const itemIds = itemIdMaps.get(slot.blockId);
+            itemMapsBySlot.set(String(slot.id), itemIds);
+            return [{
+              ...slot,
+              blockId,
+              pin: slot.pin === null ? null : itemIds.get(slot.pin) ?? null,
+              encValue: remapListValue(slot.encValue, itemIds),
+            }];
+          });
+          const slotIds = new Set(slots.map((slot) => String(slot.id)));
+          return {
+            ...mnemonic,
+            slots,
+            comparisons: mnemonic.comparisons.map((variant) => ({
+              ...variant,
+              values: Object.fromEntries(
+                Object.entries(variant.values)
+                  .filter(([id]) => slotIds.has(id))
+                  .map(([id, value]) => [
+                    id,
+                    itemMapsBySlot.has(id) ? remapListValue(value, itemMapsBySlot.get(id)) : value,
+                  ]),
+              ),
+            })),
+          };
+        });
+        state.mnemonics = updatedMnemonics;
+        state.blocks = [
+          ...state.blocks.filter((b) => b.kind !== "list"),
+          ...replacements,
+        ];
+        if (currentListIds.has(state.selectedBlock))
+          state.selectedBlock = blockIdMap.get(state.selectedBlock) ?? null;
+        refresh();
+      }
+
+      function loadMnemonics(data) {
+        if (!data || data.format !== "opcode-composer-mnemonics" || !Array.isArray(data.mnemonics))
+          throw new Error("This is not a supported mnemonic file.");
+        if (data.version !== 1 && data.version !== 2)
+          throw new Error("This mnemonic file version is not supported.");
+        for (const key of ["docTitle", "docIntro"])
+          if (Object.hasOwn(data, key) && typeof data[key] !== "string")
+            throw new Error(`The file contains an invalid ${key}.`);
+        if (!validMnemonicGroups(data.mnemonics))
+          throw new Error("The file contains invalid mnemonic forms or shared fields.");
+        if (Array.isArray(data.blocks) && data.blocks.some((b) =>
+          b && Object.hasOwn(b, "numberMode") && !NUMBER_MODES.includes(b.numberMode)))
+          throw new Error("The file contains an invalid number mode.");
+        if (Array.isArray(data.blocks) && data.blocks.some((b) => b && !validBlockConstraints(b)))
+          throw new Error("The file contains invalid block constraints.");
+
+        const imported = sanitize({ blocks: data.blocks || [], mnemonics: data.mnemonics });
+        const valid =
+          imported.mnemonics.length === data.mnemonics.length &&
+          imported.mnemonics.every((m, i) =>
+            m.slots.length === (Array.isArray(data.mnemonics[i]?.slots) ? data.mnemonics[i].slots.length : 0) &&
+            m.comparisons.length === (Array.isArray(data.mnemonics[i]?.comparisons) ? data.mnemonics[i].comparisons.length : 0),
+          );
+        if (!valid) throw new Error("The file contains invalid mnemonic data.");
+
+        const sourceIds = new Set();
+        const addSourceId = (id) => {
+          if (!Number.isInteger(id) || id <= 0 || sourceIds.has(id))
+            throw new Error("The file contains missing or duplicate IDs.");
+          sourceIds.add(id);
+        };
+        for (const b of imported.blocks) {
+          addSourceId(b.id);
+          for (const item of b.items) addSourceId(item.id);
+        }
+        for (const m of imported.mnemonics) {
+          addSourceId(m.id);
+          for (const slot of m.slots) addSourceId(slot.id);
+          const slotIds = new Set(m.slots.map((slot) => slot.id));
+          for (const variant of m.comparisons)
+            for (const id of Object.keys(variant.values || {}))
+              if (!slotIds.has(Number(id)))
+                throw new Error(`Mnemonic "${m.name}" has a comparison for a missing slot.`);
+        }
+
+        const importedById = new Map(imported.blocks.map((b) => [b.id, b]));
+        const addedBlocks = new Map(); // source block ID -> new block ID
+        const missingBlocks = new Map(); // normalized block name -> new block ID
+        const missingDefinitions = new Set();
+        const conflictingDefinitions = new Set();
+        const addBlockCopy = (source, sourceName) => {
+          const existing = source?.generatedPadding
+            ? null : blockByName(source?.name || sourceName);
+          if (existing) {
+            if (source && (
+              source.kind !== existing.kind ||
+              (source.kind !== "list" && source.width !== existing.width) ||
+              (source.kind === "number" && source.numberMode !== existing.numberMode) ||
+              source.startBit !== existing.startBit ||
+              source.required !== existing.required ||
+              (source.kind === "const" && source.value !== existing.value)
+            )) conflictingDefinitions.add(existing.name);
+            return existing.id;
+          }
+          if (source && addedBlocks.has(source.id)) return addedBlocks.get(source.id);
+          const missingName = normalizeName(sourceName);
+          if (!source && missingBlocks.has(missingName)) return missingBlocks.get(missingName);
+          if (!source) missingDefinitions.add(sourceName);
+          const copy = {
+            id: newId(),
+            kind: source?.kind || "number",
+            name: source?.name || sourceName || "Imported block",
+            items: source?.items.map((item) => ({ ...item, id: newId() })) || [],
+            widthOverride: source?.widthOverride || "",
+            width: source?.width ?? "16",
+            startBit: source?.startBit ?? "",
+            required: source?.required === true,
+            generatedPadding: source?.generatedPadding === true,
+            signed: source?.signed === true,
+            numberMode: source?.numberMode ?? "unsigned",
+            value: source?.value || "",
+            color: source?.color || "",
+          };
+          state.blocks.push(copy);
+          if (source) addedBlocks.set(source.id, copy.id);
+          else missingBlocks.set(missingName, copy.id);
+          return copy.id;
+        };
+
+        const slotIdMap = new Map();
+        const listValuesBySlot = new Map();
+        const groupIdMap = new Map();
+        for (const m of imported.mnemonics) {
+          const groupId = mnemonicGroupId(m);
+          if (!groupIdMap.has(groupId)) groupIdMap.set(groupId, newId());
+        }
+        for (const m of imported.mnemonics)
+          for (const slot of m.slots) slotIdMap.set(slot.id, newId());
+        const addedMnemonics = imported.mnemonics.map((m) => ({
+          ...m,
+          id: newId(),
+          groupId: groupIdMap.get(mnemonicGroupId(m)),
+          slots: m.slots.map((slot) => {
+            const source = importedById.get(slot.blockId);
+            if (!source && !slot.blockName)
+              throw new Error(`Mnemonic "${m.name}" has a slot without a block.`);
+            const blockId = addBlockCopy(source, slot.blockName);
+            const target = blockById(blockId);
+            const remapValue = (value) => {
+              if (value === "" || target.kind !== "list") return value;
+              const sourceItem = source?.items.find((item) => String(item.id) === value);
+              const item = source
+                ? sourceItem && itemByName(target, sourceItem.name)
+                : target.items.find((entry) => String(entry.id) === value);
+              if (!item)
+                throw new Error(`Mnemonic "${m.name}" refers to an encoded item that is not in list "${target.name}".`);
+              return String(item.id);
+            };
+            listValuesBySlot.set(String(slot.id), remapValue);
+            let pin = null;
+            if (slot.pin !== null || slot.pinName) {
+              const sourceItem = source?.items.find((item) => item.id === slot.pin);
+              const item = itemByName(target, slot.pinName || sourceItem?.name);
+              if (!item)
+                throw new Error(`Mnemonic "${m.name}" refers to a pinned item that is not in list "${target.name}".`);
+              pin = item.id;
+            }
+            return {
+              ...slot,
+              id: slotIdMap.get(slot.id),
+              blockId,
+              blockName: target.name,
+              pin,
+              pinName: pin === null ? "" : itemNameById(target, pin),
+              encValue: remapValue(slot.encValue),
+            };
+          }),
+          comparisons: m.comparisons.map((variant) => ({
+            ...variant,
+            values: Object.fromEntries(
+              Object.entries(variant.values || {}).map(([id, value]) => [
+                slotIdMap.get(Number(id)),
+                listValuesBySlot.get(id)(value),
+              ]),
+            ),
+          })),
+        }));
+
+        state.mnemonics = addedMnemonics;
+        pruneGeneratedPadding();
+        state.selectedMnemonic = addedMnemonics[0]?.id ?? null;
+        state.selectedEncodeMnemonic = addedMnemonics[0]?.id ?? null;
+        if (Object.hasOwn(data, "docTitle")) {
+          state.docTitle = data.docTitle;
+          $("docTitle").value = state.docTitle;
+        }
+        if (Object.hasOwn(data, "docIntro")) {
+          state.docIntro = data.docIntro;
+          $("docIntro").value = state.docIntro;
+        }
+        refresh();
+        const notices = [];
+        if (missingDefinitions.size)
+          notices.push(`Missing block definitions were created as unsigned 16-bit numbers: ${[...missingDefinitions].join(", ")}. Check their type and width.`);
+        if (conflictingDefinitions.size)
+          notices.push(`Existing block definitions were kept instead of the imported definitions: ${[...conflictingDefinitions].join(", ")}. Check their type and width.`);
+        if (notices.length) alert(notices.join("\n\n"));
+      }
+
+      // ---------- Wiring ----------
+
+      const palette = $("palette");
+      $("paddingTemplate").addEventListener("dragstart", (e) =>
+        startDrag(e, { type: "padding" }, "copy"),
+      );
+      $("paddingTemplate").addEventListener("dragend", endDrag);
+      $("insertPadding").addEventListener("click", () => {
+        const m = currentMnemonic();
+        if (m) addPaddingSlot(m, m.slots.length);
+      });
+      const paletteDropIndex = (e) => {
+        const rows = [...palette.querySelectorAll("li.block")];
+        const index = rows.findIndex((row) => {
+          const rect = row.getBoundingClientRect();
+          return e.clientY < rect.top + rect.height / 2;
+        });
+        return index < 0 ? rows.length : index;
+      };
+      palette.addEventListener("dragover", (e) => {
+        if (!dragData || dragData.type !== "block") return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        clearDropMarks();
+        const target = palette.querySelectorAll("li.block")[paletteDropIndex(e)];
+        if (target) target.classList.add("drop-before");
+        else palette.classList.add("drop-end");
+      });
+      palette.addEventListener("dragleave", (e) => {
+        if (!palette.contains(e.relatedTarget)) clearDropMarks();
+      });
+      palette.addEventListener("drop", (e) => {
+        if (!dragData || dragData.type !== "block") return;
+        e.preventDefault();
+        const id = dragData.id;
+        const index = paletteDropIndex(e);
+        endDrag();
+        moveBlockTo(id, index);
+      });
+
+      $("wordWidth").value = state.wordWidth;
+      $("docTitle").value = state.docTitle;
+      $("docTitle").addEventListener("input", (e) => {
+        state.docTitle = e.target.value;
+        save();
+      });
+      $("docIntro").value = state.docIntro;
+      $("docIntro").addEventListener("input", (e) => {
+        state.docIntro = e.target.value;
+        save();
+      });
+      $("wordWidth").addEventListener("input", (e) => {
+        state.wordWidth = e.target.value;
+        refresh();
+      });
+      $("addList").addEventListener("click", () => addBlock("list"));
+      $("addNumber").addEventListener("click", () => addBlock("number"));
+      $("addConst").addEventListener("click", () => addBlock("const"));
+      $("saveProject").addEventListener("click", saveProject);
+      $("loadProject").addEventListener("click", () => $("projectFile").click());
+      $("projectFile").addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        e.target.value = "";
+        if (!file) return;
+        try {
+          loadFile(await file.text());
+        } catch (error) {
+          alert(`Could not load file: ${error.message}`);
+        }
+      });
+      $("addMnemonic").addEventListener("click", addMnemonic);
+      $("decInput").addEventListener("input", () => renderDecode(computeAll()));
+      $("exportMd").addEventListener("click", () => {
+        $("mdOutput").value = generateMarkdown(computeAll());
+      });
+      $("copyMd").addEventListener("click", () =>
+        copyText($("mdOutput").value),
+      );
+      $("printDocs").addEventListener("click", () => {
+        const preview = window.open("", "_blank");
+        if (!preview) {
+          alert("Allow pop-ups to preview and print the documentation.");
+          return;
+        }
+        preview.document.open();
+        preview.document.write(generatePrintHtml(computeAll()));
+        preview.document.close();
+      });
+      $("resetAll").addEventListener("click", () => {
+        if (!confirm("Delete all blocks and mnemonics? This cannot be undone."))
+          return;
+        state = defaultState();
+        $("wordWidth").value = state.wordWidth;
+        $("docTitle").value = state.docTitle;
+        $("docIntro").value = state.docIntro;
+        refresh();
+      });
+
+      refresh();
+      if (loadMessage) alert(loadMessage);
+    </script>
+  </body>
+</html>
