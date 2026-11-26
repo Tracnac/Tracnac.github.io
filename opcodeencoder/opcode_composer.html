@@ -740,6 +740,10 @@
         box-shadow: inset 3px 0 #5279c2;
       }
 
+      #palette li.block.used-in-mnemonic {
+        background: #d6f5d6;
+      }
+
       #palette li.block .bname {
         min-width: 72px;
         flex: 1 1 90px;
@@ -907,6 +911,7 @@
         padding: 6px 8px;
         border-color: #cbd5e1;
         border-radius: 7px;
+        background: #effaf1;
         box-shadow: 0 1px 2px rgb(22 34 52 / 4%);
       }
 
@@ -2508,7 +2513,14 @@
               "li",
               {
                 class:
-                  "block" + (b.id === state.selectedBlock ? " selected" : ""),
+                  "block" +
+                  ((b.kind === "list" ||
+                    b.kind === "number" ||
+                    b.kind === "const") &&
+                  (ctx.usage.get(b.id) || 0) > 0
+                    ? " used-in-mnemonic"
+                    : "") +
+                  (b.id === state.selectedBlock ? " selected" : ""),
                 draggable: true,
                 title: b.kind === "padding"
                   ? "Click to edit. The name is generated from each mnemonic and bit position."
